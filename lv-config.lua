@@ -1,7 +1,8 @@
 -- general
 lvim.format_on_save = true
 lvim.lint_on_save = true
-lvim.colorscheme = "tokyonight"
+lvim.colorscheme = ""
+-- tokyonight
 
 -- keymappings
 lvim.leader = "space"
@@ -62,426 +63,461 @@ end
 
 -- Additional Plugins
 lvim.plugins = {
-    {"folke/tokyonight.nvim"}, {
-        "ray-x/lsp_signature.nvim",
-        config = function() require"lsp_signature".on_attach() end,
-        event = {"InsertEnter"}
-    },
+  {"folke/tokyonight.nvim"}, {
+      "ray-x/lsp_signature.nvim",
+      config = function() require"lsp_signature".on_attach() end,
+      event = {"InsertEnter"}
+  },
 
-    {
-      "phaazon/hop.nvim",
-      event = "BufRead",
-      config = function()
-        require("hop").setup()
-        vim.api.nvim_set_keymap("n", "s", ":HopChar2<cr>", { silent = true })
-        vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
-      end
-    },
+  {
+    "phaazon/hop.nvim",
+    event = "BufRead",
+    config = function()
+      require("hop").setup()
+      vim.api.nvim_set_keymap("n", "s", ":HopChar2<cr>", { silent = true })
+      vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
+    end
+  },
 
-    {
-      "ethanholz/nvim-lastplace",
+  {
+    "ethanholz/nvim-lastplace",
+    event = "BufRead",
+    config = function()
+      require'nvim-lastplace'.setup {
+        lastplace_ignore_buftype = {"quickfix", "nofile", "help"},
+        lastplace_ignore_filetype = {
+          "gitcommit", "gitrebase", "svn", "hgcommit"
+        },
+        lastplace_open_folds = true
+      }
+    end,
+  },
+
+  {
+    "kevinhwang91/rnvimr",
+    cmd = "Rnvimr",
+    config = function()
+      -- Make Ranger replace netrw and be the file explorer
+      -- vim.g.rnvimr_ex_enable = 1
+      vim.g.rnvimr_draw_border = 1
+      vim.g.rnvimr_pick_enable = 1
+      vim.g.rnvimr_bw_enable = 1
+      vim.api.nvim_set_keymap("n", "-", ":RnvimrToggle<CR>", { noremap = true, silent = true })
+      require("lv-rnvimr").config()
+    end,
+  },
+
+  {
+    "pwntester/octo.nvim",
       event = "BufRead",
-      config = function()
-        require'nvim-lastplace'.setup {
-          lastplace_ignore_buftype = {"quickfix", "nofile", "help"},
-          lastplace_ignore_filetype = {
-            "gitcommit", "gitrebase", "svn", "hgcommit"
+  },
+
+  {
+    "f-person/git-blame.nvim",
+    event = "BufRead",
+    config = function()
+      vim.cmd "highlight default link gitblame SpecialComment"
+      vim.g.gitblame_enabled = 0
+    end,
+  },
+
+  {
+    "sindrets/diffview.nvim",
+    event = "BufRead",
+    config = function()
+      local cb = require'diffview.config'.diffview_callback
+
+      require('diffview').setup {
+        diff_binaries = false,    -- Show diffs for binaries
+        file_panel = {
+          width = 35,
+          use_icons = true        -- Requires nvim-web-devicons
+        },
+        key_bindings = {
+          disable_defaults = false,                   -- Disable the default key bindings
+          -- The `view` bindings are active in the diff buffers, only when the current
+          -- tabpage is a Diffview.
+          view = {
+            ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file
+            ["<s-tab>"]   = cb("select_prev_entry"),  -- Open the diff for the previous file
+            ["<leader>e"] = cb("focus_files"),        -- Bring focus to the files panel
+            ["<leader>b"] = cb("toggle_files"),       -- Toggle the files panel.
           },
-          lastplace_open_folds = true
-        }
-      end,
-    },
-
-    {
-      "kevinhwang91/rnvimr",
-      cmd = "Rnvimr",
-      config = function()
-        -- Make Ranger replace netrw and be the file explorer
-        -- vim.g.rnvimr_ex_enable = 1
-        vim.g.rnvimr_draw_border = 1
-        vim.g.rnvimr_pick_enable = 1
-        vim.g.rnvimr_bw_enable = 1
-        vim.api.nvim_set_keymap("n", "-", ":RnvimrToggle<CR>", { noremap = true, silent = true })
-        require("lv-rnvimr").config()
-      end,
-    },
-
-    {
-      "pwntester/octo.nvim",
-        event = "BufRead",
-    },
-
-    {
-      "f-person/git-blame.nvim",
-      event = "BufRead",
-      config = function()
-        vim.cmd "highlight default link gitblame SpecialComment"
-        vim.g.gitblame_enabled = 0
-      end,
-    },
-
-    {
-      "sindrets/diffview.nvim",
-      event = "BufRead",
-      config = function()
-        local cb = require'diffview.config'.diffview_callback
-
-        require('diffview').setup {
-          diff_binaries = false,    -- Show diffs for binaries
           file_panel = {
-            width = 35,
-            use_icons = true        -- Requires nvim-web-devicons
-          },
-          key_bindings = {
-            disable_defaults = false,                   -- Disable the default key bindings
-            -- The `view` bindings are active in the diff buffers, only when the current
-            -- tabpage is a Diffview.
-            view = {
-              ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file
-              ["<s-tab>"]   = cb("select_prev_entry"),  -- Open the diff for the previous file
-              ["<leader>e"] = cb("focus_files"),        -- Bring focus to the files panel
-              ["<leader>b"] = cb("toggle_files"),       -- Toggle the files panel.
-            },
-            file_panel = {
-              ["j"]             = cb("next_entry"),         -- Bring the cursor to the next file entry
-              ["<down>"]        = cb("next_entry"),
-              ["k"]             = cb("prev_entry"),         -- Bring the cursor to the previous file entry.
-              ["<up>"]          = cb("prev_entry"),
-              ["<cr>"]          = cb("select_entry"),       -- Open the diff for the selected entry.
-              ["o"]             = cb("select_entry"),
-              ["<2-LeftMouse>"] = cb("select_entry"),
-              ["-"]             = cb("toggle_stage_entry"), -- Stage / unstage the selected entry.
-              ["S"]             = cb("stage_all"),          -- Stage all entries.
-              ["U"]             = cb("unstage_all"),        -- Unstage all entries.
-              ["X"]             = cb("restore_entry"),      -- Restore entry to the state on the left side.
-              ["R"]             = cb("refresh_files"),      -- Update stats and entries in the file list.
-              ["<tab>"]         = cb("select_next_entry"),
-              ["<s-tab>"]       = cb("select_prev_entry"),
-              ["<leader>e"]     = cb("focus_files"),
-              ["<leader>b"]     = cb("toggle_files"),
-            }
+            ["j"]             = cb("next_entry"),         -- Bring the cursor to the next file entry
+            ["<down>"]        = cb("next_entry"),
+            ["k"]             = cb("prev_entry"),         -- Bring the cursor to the previous file entry.
+            ["<up>"]          = cb("prev_entry"),
+            ["<cr>"]          = cb("select_entry"),       -- Open the diff for the selected entry.
+            ["o"]             = cb("select_entry"),
+            ["<2-LeftMouse>"] = cb("select_entry"),
+            ["-"]             = cb("toggle_stage_entry"), -- Stage / unstage the selected entry.
+            ["S"]             = cb("stage_all"),          -- Stage all entries.
+            ["U"]             = cb("unstage_all"),        -- Unstage all entries.
+            ["X"]             = cb("restore_entry"),      -- Restore entry to the state on the left side.
+            ["R"]             = cb("refresh_files"),      -- Update stats and entries in the file list.
+            ["<tab>"]         = cb("select_next_entry"),
+            ["<s-tab>"]       = cb("select_prev_entry"),
+            ["<leader>e"]     = cb("focus_files"),
+            ["<leader>b"]     = cb("toggle_files"),
           }
         }
-        vim.api.nvim_set_keymap("n", "<Bslash>d", ":DiffviewOpen<Enter>", { noremap = true, silent = true })
+      }
+      vim.api.nvim_set_keymap("n", "<Bslash>d", ":DiffviewOpen<Enter>", { noremap = true, silent = true })
+    end
+  },
+
+  {
+    "mattn/emmet-vim"
+  },
+
+  {
+    "tpope/vim-fugitive",
+    cmd = {
+      "G",
+      "Git",
+      "Gdiffsplit",
+      "Gread",
+      "Gwrite",
+      "Ggrep",
+      "GMove",
+      "GDelete",
+      "GBrowse",
+      "GRemove",
+      "GRename",
+      "Glgrep",
+      "Gedit"
+    },
+    ft = {"fugitive"}
+  },
+
+  {
+    "nvim-treesitter/playground",
+    event = "BufRead",
+  },
+
+  {
+    "windwp/nvim-ts-autotag",
+    event = "InsertEnter",
+    config = function()
+      require('nvim-ts-autotag').setup()
+    end
+  },
+
+  {
+    "p00f/nvim-ts-rainbow",
+  },
+
+  {
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    event = "BufRead",
+  },
+
+  {
+    "nvim-telescope/telescope-fzy-native.nvim",
+    run = "make",
+  },
+
+  {
+    "folke/lsp-colors.nvim",
+    event = "BufRead",
+  },
+
+  {
+    "rmagatti/goto-preview",
+    config = function()
+      require('goto-preview').setup {
+        width = 120; -- Width of the floating window
+          height = 25; -- Height of the floating window
+          default_mappings = true; -- Bind default mappings
+          debug = true; -- Print debug information
+          opacity = nil; -- 0-100 opacity level of the floating window where 100 is fully transparent.
+          post_open_hook = nil -- A function taking two arguments, a buffer and a window to be ran as a hook.
+          -- You can use "default_mappings = true" setup option
+          -- Or explicitly set keybindings
+          -- vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>")
+          -- vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>")
+          -- vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>")
+      }
+    end
+  },
+
+  {
+    "norcalli/nvim-colorizer.lua",
+    config = function()
+      require("colorizer").setup({ "*" }, {
+        RGB = true, -- #RGB hex codes
+        RRGGBB = true, -- #RRGGBB hex codes
+        RRGGBBAA = true, -- #RRGGBBAA hex codes
+        rgb_fn = true, -- CSS rgb() and rgba() functions
+        hsl_fn = true, -- CSS hsl() and hsla() functions
+        css = true, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+        css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+      })
+    end,
+  },
+
+  {
+    "andymass/vim-matchup",
+    event = "CursorMoved",
+    config = function()
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end,
+  },
+
+  {
+    "nacro90/numb.nvim",
+    event = "BufRead",
+    config = function()
+      require("numb").setup {
+        show_numbers = true, -- Enable 'number' for the window while peeking
+        show_cursorline = true, -- Enable 'cursorline' for the window while peeking
+      }
+    end,
+  },
+
+  {
+    "iamcco/markdown-preview.nvim",
+    run = "cd app && npm install",
+    ft = "markdown",
+    config = function()
+      vim.g.mkdp_auto_start = 1
+    end,
+  },
+
+  {
+    "turbio/bracey.vim",
+    cmd = {"Bracey", "BracyStop", "BraceyReload", "BraceyEval"},
+    run = "npm install --prefix server",
+  },
+
+  {
+    "npxbr/glow.nvim",
+    ft = {"markdown"}
+    -- run = "yay -S glow"
+  },
+
+  {
+    "ahmedkhalf/lsp-rooter.nvim",
+    event = "BufRead",
+    config = function()
+      require("lsp-rooter").setup()
+      vim.api.nvim_set_keymap("n", "<Bslash>r", ":rooter<Enter>", { noremap = true, silent = true })
+    end,
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    event = "BufRead",
+    config = function()
+      require("todo-comments").setup {}
+    end,
+    requires = "nvim-lua/plenary.nvim",
+  },
+
+  {
+    "simrat39/symbols-outline.nvim",
+    event = "BufRead",
+    cmd = "SymbolsOutline",
+    config = function()
+      vim.api.nvim_set_keymap("n", "<Bslash>o", ":SymbolsOutline<Enter>", { noremap = true, silent = true })
+    end
+  },
+
+  {
+    "itchyny/vim-cursorword",
+      event = {"BufEnter", "BufNewFile"},
+      config = function()
+        vim.api.nvim_command("augroup user_plugin_cursorword")
+        vim.api.nvim_command("autocmd!")
+        vim.api.nvim_command("autocmd FileType NvimTree,lspsagafinder,dashboard,vista let b:cursorword = 0")
+        vim.api.nvim_command("autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif")
+        vim.api.nvim_command("autocmd InsertEnter * let b:cursorword = 0")
+        vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
+        vim.api.nvim_command("augroup END")
       end
-    },
+  },
 
-    {
-      "mattn/emmet-vim"
-    },
+  {
+    "tpope/vim-surround",
+    event = {"BufEnter", "BufRead"},
+    keys = {"c", "d", "y"}
+  },
 
-    {
-      "tpope/vim-fugitive",
-      cmd = {
-        "G",
-        "Git",
-        "Gdiffsplit",
-        "Gread",
-        "Gwrite",
-        "Ggrep",
-        "GMove",
-        "GDelete",
-        "GBrowse",
-        "GRemove",
-        "GRename",
-        "Glgrep",
-        "Gedit"
-      },
-      ft = {"fugitive"}
-    },
+  {
+    "metakirby5/codi.vim",
+    cmd = "Codi",
+  },
 
-    {
-      "nvim-treesitter/playground",
-      event = "BufRead",
-    },
+  {
+    "karb94/neoscroll.nvim",
+    event = "WinScrolled",
+    config = function()
+      require('neoscroll').setup({
+        -- All these keys will be mapped to their corresponding default scrolling animation
+        mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>',
+        '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
+        hide_cursor = true,          -- Hide cursor while scrolling
+        stop_eof = true,             -- Stop at <EOF> when scrolling downwards
+        use_local_scrolloff = false, -- Use the local scope of scrolloff instead of the global scope
+        respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+        cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
+        easing_function = nil,        -- Default easing function
+        pre_hook = nil,              -- Function to run before the scrolling animation starts
+        post_hook = nil,              -- Function to run after the scrolling animation ends
+      })
+    end
+  },
 
-    {
-      "windwp/nvim-ts-autotag",
-      event = "InsertEnter",
-      config = function()
-        require('nvim-ts-autotag').setup()
-      end
-    },
+  {
+    "Xuyuanp/scrollbar.nvim",
+  },
 
-    {
-      "p00f/nvim-ts-rainbow",
-    },
+  {
+    "alexaandru/nvim-lspupdate"
+  },
 
-    {
-      "JoosepAlviste/nvim-ts-context-commentstring",
-      event = "BufRead",
-    },
+  {
+    "fladson/vim-kitty"
+  },
 
-    {
-      "nvim-telescope/telescope-fzy-native.nvim",
-      run = "make",
+  {
+    "s1n7ax/nvim-comment-frame",
+    requires = {
+        { 'nvim-treesitter' }
     },
-
-    {
-      "folke/lsp-colors.nvim",
-      event = "BufRead",
-    },
-
-    {
-      "rmagatti/goto-preview",
-      config = function()
-        require('goto-preview').setup {
-          width = 120; -- Width of the floating window
-            height = 25; -- Height of the floating window
-            default_mappings = true; -- Bind default mappings
-            debug = true; -- Print debug information
-            opacity = nil; -- 0-100 opacity level of the floating window where 100 is fully transparent.
-            post_open_hook = nil -- A function taking two arguments, a buffer and a window to be ran as a hook.
-            -- You can use "default_mappings = true" setup option
-            -- Or explicitly set keybindings
-            -- vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>")
-            -- vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>")
-            -- vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>")
-        }
-      end
-    },
-
-    {
-      "norcalli/nvim-colorizer.lua",
-      config = function()
-        require("colorizer").setup({ "*" }, {
-          RGB = true, -- #RGB hex codes
-          RRGGBB = true, -- #RRGGBB hex codes
-          RRGGBBAA = true, -- #RRGGBBAA hex codes
-          rgb_fn = true, -- CSS rgb() and rgba() functions
-          hsl_fn = true, -- CSS hsl() and hsla() functions
-          css = true, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-          css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
-        })
-      end,
-    },
-
-    {
-      "andymass/vim-matchup",
-      event = "CursorMoved",
-      config = function()
-        vim.g.matchup_matchparen_offscreen = { method = "popup" }
-      end,
-    },
-
-    {
-      "nacro90/numb.nvim",
-      event = "BufRead",
-      config = function()
-        require("numb").setup {
-          show_numbers = true, -- Enable 'number' for the window while peeking
-          show_cursorline = true, -- Enable 'cursorline' for the window while peeking
-        }
-      end,
-    },
-
-    {
-      "windwp/nvim-spectre",
-      event = "BufRead",
-      config = function()
-        require("spectre").setup()
-        vim.api.nvim_set_keymap("n", "<Bslash>S", ":lua require('spectre').open()<CR>", { noremap = true, silent = true })
-        vim.api.nvim_set_keymap("n", "<Bslash>s", ":lua require('spectre').open_visual()<CR>", { noremap = true, silent = true })
-        vim.api.nvim_set_keymap("n", "<Bslash>sw", ":lua require('spectre').open_visual({select_word=true})<CR>", { noremap = true, silent = true })
-        vim.api.nvim_set_keymap("n", "<Bslash>sp", "viw:lua require('spectre').open_file_search()<cr>", { noremap = true, silent = true })
-      end,
-    },
-
-    {
-      "iamcco/markdown-preview.nvim",
-      run = "cd app && npm install",
-      ft = "markdown",
-      config = function()
-        vim.g.mkdp_auto_start = 1
-      end,
-    },
-
-    {
-      "turbio/bracey.vim",
-      cmd = {"Bracey", "BracyStop", "BraceyReload", "BraceyEval"},
-      run = "npm install --prefix server",
-    },
-
-    {
-      "npxbr/glow.nvim",
-      ft = {"markdown"}
-      -- run = "yay -S glow"
-    },
-
-    {
-      "ahmedkhalf/lsp-rooter.nvim",
-      event = "BufRead",
-      config = function()
-        require("lsp-rooter").setup()
-        vim.api.nvim_set_keymap("n", "<Bslash>r", ":rooter<Enter>", { noremap = true, silent = true })
-      end,
-    },
-
-    {
-      "folke/todo-comments.nvim",
-      event = "BufRead",
-      config = function()
-        require("todo-comments").setup {}
-      end,
-      requires = "nvim-lua/plenary.nvim",
-    },
-
-    {
-      "simrat39/symbols-outline.nvim",
-      event = "BufRead",
-      cmd = "SymbolsOutline",
-      config = function()
-        vim.api.nvim_set_keymap("n", "<Bslash>o", ":SymbolsOutline<Enter>", { noremap = true, silent = true })
-      end
-    },
-
-    {
-      "itchyny/vim-cursorword",
-        event = {"BufEnter", "BufNewFile"},
-        config = function()
-          vim.api.nvim_command("augroup user_plugin_cursorword")
-          vim.api.nvim_command("autocmd!")
-          vim.api.nvim_command("autocmd FileType NvimTree,lspsagafinder,dashboard,vista let b:cursorword = 0")
-          vim.api.nvim_command("autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif")
-          vim.api.nvim_command("autocmd InsertEnter * let b:cursorword = 0")
-          vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
-          vim.api.nvim_command("augroup END")
-        end
-    },
-
-    {
-      "tpope/vim-surround",
-      event = {"BufEnter", "BufRead"},
-      keys = {"c", "d", "y"}
-    },
-
-    {
-      "metakirby5/codi.vim",
-      cmd = "Codi",
-    },
-
-    {
-      "karb94/neoscroll.nvim",
-      event = "WinScrolled",
-      config = function()
-        require('neoscroll').setup({
-          -- All these keys will be mapped to their corresponding default scrolling animation
-          mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>',
-          '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
-          hide_cursor = true,          -- Hide cursor while scrolling
-          stop_eof = true,             -- Stop at <EOF> when scrolling downwards
-          use_local_scrolloff = false, -- Use the local scope of scrolloff instead of the global scope
-          respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
-          cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
-          easing_function = nil,        -- Default easing function
-          pre_hook = nil,              -- Function to run before the scrolling animation starts
-          post_hook = nil,              -- Function to run after the scrolling animation ends
-        })
-      end
-    },
-
-    {
-      "Xuyuanp/scrollbar.nvim",
-    },
-
-    {
-      "alexaandru/nvim-lspupdate"
-    },
-
-    {
-      "fladson/vim-kitty"
-    },
-
-    {
-      "s1n7ax/nvim-comment-frame",
-      requires = {
-          { 'nvim-treesitter' }
-      },
-      config = function()
-        require('nvim-comment-frame').setup({
-          keymap = '<Bslash>c',
-          multiline_keymap = '<Bslash>C',
-          languages = {
-            -- configuration for Lua programming language
-            -- @NOTE global configuration will be overridden by language level
-            -- configuration if provided
-            lua = {
-                -- start the comment with this string
-                start_str = '--[[',
-                -- end the comment line with this string
-                end_str = ']]--',
-                -- fill the comment frame border with this character
-                fill_char = '*',
-                -- width of the comment frame
-                frame_width = 100,
-                -- wrap the line after 'n' characters
-                line_wrap_len = 70,
-                -- automatically indent the comment frame based on the line
-                auto_indent = false,
-                -- add comment above the current line
-                add_comment_above = false,
-            },
-          }
-        })
-      end
-    },
-
-    {
-      "folke/zen-mode.nvim",
-      config = function()
-        require("zen-mode").setup {
-          window = {
-            backdrop = 0.95, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
-            -- height and width can be:
-            -- * an absolute number of cells when > 1
-            -- * a percentage of the width / height of the editor when <= 1
-            -- * a function that returns the width or the height
-            width = 120, -- width of the Zen window
-            height = 1, -- height of the Zen window
-            -- by default, no options are changed for the Zen window
-            -- uncomment any of the options below, or add other vim.wo options you want to apply
-            options = {
-              -- signcolumn = "no", -- disable signcolumn
-              -- number = false, -- disable number column
-              -- relativenumber = false, -- disable relative numbers
-              -- cursorline = false, -- disable cursorline
-              -- cursorcolumn = false, -- disable cursor column
-              -- foldcolumn = "0", -- disable fold column
-              -- list = false, -- disable whitespace characters
-            },
+    config = function()
+      require('nvim-comment-frame').setup({
+        keymap = '<Bslash>c',
+        multiline_keymap = '<Bslash>C',
+        languages = {
+          -- configuration for Lua programming language
+          -- @NOTE global configuration will be overridden by language level
+          -- configuration if provided
+          lua = {
+              -- start the comment with this string
+              start_str = '--[[',
+              -- end the comment line with this string
+              end_str = ']]--',
+              -- fill the comment frame border with this character
+              fill_char = '*',
+              -- width of the comment frame
+              frame_width = 100,
+              -- wrap the line after 'n' characters
+              line_wrap_len = 70,
+              -- automatically indent the comment frame based on the line
+              auto_indent = false,
+              -- add comment above the current line
+              add_comment_above = false,
           },
-          plugins = {
-            -- disable some global vim options (vim.o...)
-            -- comment the lines to not apply the options
-            options = {
-              enabled = true,
-              ruler = false, -- disables the ruler text in the cmd line area
-              showcmd = false, -- disables the command in the last line of the screen
-            },
-            twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
-            gitsigns = { enabled = false }, -- disables git signs
-            tmux = { enabled = false }, -- disables the tmux statusline
-            -- this will change the font size on kitty when in zen mode
-            -- to make this work, you need to set the following kitty options:
-            -- - allow_remote_control socket-only
-            -- - listen_on unix:/tmp/kitty
-            kitty = {
-              enabled = true,
-              font = "+4", -- font size increment
-            },
-          },
-          -- callback where you can add custom code when the Zen window opens
-          on_open = function(win)
-          end,
-          -- callback where you can add custom code when the Zen window closes
-          on_close = function()
-          end,
         }
+      })
+    end
+  },
 
-        vim.api.nvim_set_keymap("n", "<Bslash>z", ":ZenMode<Enter>", { noremap = true, silent = true })
-      end
-    }
+  {
+    "folke/zen-mode.nvim",
+    config = function()
+      require("zen-mode").setup {
+        window = {
+          backdrop = 0.95, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
+          -- height and width can be:
+          -- * an absolute number of cells when > 1
+          -- * a percentage of the width / height of the editor when <= 1
+          -- * a function that returns the width or the height
+          width = 120, -- width of the Zen window
+          height = 1, -- height of the Zen window
+          -- by default, no options are changed for the Zen window
+          -- uncomment any of the options below, or add other vim.wo options you want to apply
+          options = {
+            -- signcolumn = "no", -- disable signcolumn
+            -- number = false, -- disable number column
+            -- relativenumber = false, -- disable relative numbers
+            -- cursorline = false, -- disable cursorline
+            -- cursorcolumn = false, -- disable cursor column
+            -- foldcolumn = "0", -- disable fold column
+            -- list = false, -- disable whitespace characters
+          },
+        },
+        plugins = {
+          -- disable some global vim options (vim.o...)
+          -- comment the lines to not apply the options
+          options = {
+            enabled = true,
+            ruler = false, -- disables the ruler text in the cmd line area
+            showcmd = false, -- disables the command in the last line of the screen
+          },
+          twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
+          gitsigns = { enabled = false }, -- disables git signs
+          tmux = { enabled = false }, -- disables the tmux statusline
+          -- this will change the font size on kitty when in zen mode
+          -- to make this work, you need to set the following kitty options:
+          -- - allow_remote_control socket-only
+          -- - listen_on unix:/tmp/kitty
+          kitty = {
+            enabled = true,
+            font = "+4", -- font size increment
+          },
+        },
+        -- callback where you can add custom code when the Zen window opens
+        on_open = function(win)
+        end,
+        -- callback where you can add custom code when the Zen window closes
+        on_close = function()
+        end,
+      }
 
+      vim.api.nvim_set_keymap("n", "<Bslash>z", ":ZenMode<Enter>", { noremap = true, silent = true })
+    end
+  },
+
+  --     {
+  --       "neoclide/coc.nvim",
+  --       run='yarn install --frozen-lockfile'
+  --     },
+  -- 
+  --     {
+  --       "junegunn/fzf",
+  --       requires = "neoclide/coc.nvim",
+  --       event={ "BufEnter", "BufRead" },
+  --       run = function() vim.fn['fzf#install']() end,
+  --       config = function()
+  --         vim.api.nvim_set_keymap("n", "gr", ":CocCommand fzf-preview.CocReferences<CR>", { noremap = true, silent = true })
+  --         vim.api.nvim_set_keymap("n", "gt", ":CocCommand fzf-preview.CocTypeDefinitions<CR>", { noremap = true, silent = true })
+  --       end
+  --     }
+  {
+    "RishabhRD/nvim-lsputils",
+    config = function()
+    end
+  },
+
+--   {
+--     "marko-cerovac/material.nvim",
+--     config=function()
+--       vim.g.material_style = 'palenight'
+--       vim.g.material_italic_comments = true
+--       vim.g.material_italic_keywords = true
+--       vim.g.material_italic_functions = true
+--       vim.g.material_italic_variables = false
+--       vim.g.material_contrast = true
+--       vim.g.material_borders = false
+--       vim.g.material_disable_background = false
+--       --vim.g.material_custom_colors = { black = "#000000", bg = "#0F111A" }
+-- 
+--       -- Load the colorscheme
+--       require('material').set()
+--     end
+--   },
+
+  {
+    'projekt0n/github-nvim-theme',
+    config=function()
+      require('github-theme').setup({
+        themeStyle = "dark"
+      })
+    end
+  }
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
