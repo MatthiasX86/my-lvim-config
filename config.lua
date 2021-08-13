@@ -1,7 +1,7 @@
 -- general
 lvim.format_on_save = true
 lvim.lint_on_save = true
-lvim.colorscheme = ""
+lvim.colorscheme = "nightfox"
 -- tokyonight
 
 -- keymappings
@@ -32,11 +32,25 @@ lvim.builtin.nvimtree.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
 lvim.builtin.dap.active = true
 lvim.builtin.terminal.active = true
+lvim.builtin.galaxyline.active = false
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {}
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
+lvim.format_on_save = true
+
+lvim.lang.javascript.linters = { { exe = 'eslint_d│eslint' } }
+lvim.lang.javascript.formatting = { { exe = 'prettier_d_slim|prettier' } }
+lvim.lang.javascriptreact.linters = { { exe = 'eslint_d│eslint' } }
+lvim.lang.javascriptreact.formatting = { { exe = 'prettier_d_slim|prettier' } }
+
+
+lvim.lang.typescript.linters = { { exe = 'eslint_d│eslint' } }
+lvim.lang.typescript.formatting = { { exe = 'prettier_d_slim|prettier' } }
+lvim.lang.typescriptreact.linters = { { exe = 'eslint_d│eslint' } }
+lvim.lang.typescriptreact.formatting = { { exe = 'prettier_d_slim|prettier' } }
+
 
 -- telescope config settings
 lvim.builtin.telescope.extensions = {
@@ -218,10 +232,10 @@ lvim.plugins = {
     run = "make",
   },
 
-  {
-    "folke/lsp-colors.nvim",
-    event = "BufRead",
-  },
+  -- {
+  --   "folke/lsp-colors.nvim",
+  --   event = "BufRead",
+  -- },
 
   {
     "rmagatti/goto-preview",
@@ -471,59 +485,117 @@ lvim.plugins = {
     end
   },
 
-  --     {
-  --       "neoclide/coc.nvim",
-  --       run='yarn install --frozen-lockfile'
-  --     },
-  -- 
-  --     {
-  --       "junegunn/fzf",
-  --       requires = "neoclide/coc.nvim",
-  --       event={ "BufEnter", "BufRead" },
-  --       run = function() vim.fn['fzf#install']() end,
-  --       config = function()
-  --         vim.api.nvim_set_keymap("n", "gr", ":CocCommand fzf-preview.CocReferences<CR>", { noremap = true, silent = true })
-  --         vim.api.nvim_set_keymap("n", "gt", ":CocCommand fzf-preview.CocTypeDefinitions<CR>", { noremap = true, silent = true })
-  --       end
-  --     }
   {
     "RishabhRD/nvim-lsputils",
     config = function()
     end
   },
 
---   {
---     "marko-cerovac/material.nvim",
---     config=function()
---       vim.g.material_style = 'palenight'
---       vim.g.material_italic_comments = true
---       vim.g.material_italic_keywords = true
---       vim.g.material_italic_functions = true
---       vim.g.material_italic_variables = false
---       vim.g.material_contrast = true
---       vim.g.material_borders = false
---       vim.g.material_disable_background = false
---       --vim.g.material_custom_colors = { black = "#000000", bg = "#0F111A" }
--- 
---       -- Load the colorscheme
---       require('material').set()
---     end
---   },
+  -- {
+  --   "savq/melange",
+  -- },
 
   {
-    'projekt0n/github-nvim-theme',
-    config=function()
-      require('github-theme').setup({
-        themeStyle = "dark"
+    "EdenEast/nightfox.nvim",
+    config = function()
+      require('lualine').setup {
+        options = {
+          -- ... your lualine config
+          theme = "nightfox"
+        }
+      }
+    end
+  },
+
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    config = function()
+      require("indent_blankline").setup {
+        buftype_exclude = {"terminal"}
+      }
+      vim.g.indent_blankline_space_char = '.'
+      vim.g.indent_blankline_show_first_indent_level = false
+      vim.g.indent_blankline_use_treesitter = true
+      -- might make things a little slower
+      vim.g.indent_blankline_show_current_context = true
+    end
+  },
+
+  {
+    'hoob3rt/lualine.nvim',
+    config = function()
+      require('lualine').setup {
+
+        options = {
+          theme = 'horizon',
+          lower = true,
+          upper = true,
+        },
+      }
+    end,
+    requires = {'kyazdani42/nvim-web-devicons', opt = true}
+  },
+
+  {
+    "vuki656/package-info.nvim",
+    config = function()
+      require('package-info').setup()
+      -- Display latest versions as virtual text
+      vim.api.nvim_set_keymap("n", "<Bslash>ns", "<cmd>lua require('package-info').show()<cr>",
+        { silent = true, noremap = true }
+      )
+
+      -- Clear package info virtual text
+      vim.api.nvim_set_keymap("n", "<Bslash>nc", "<cmd>lua require('package-info').hide()<cr>",
+        { silent = true, noremap = true }
+      )
+    end
+  },
+
+  {
+    'sudormrfbin/cheatsheet.nvim',
+    requires = {
+      {'nvim-telescope/telescope.nvim'},
+      {'nvim-lua/popup.nvim'},
+      {'nvim-lua/plenary.nvim'},
+    },
+    config = function()
+      require("cheatsheet").setup({
+          -- Whether to show bundled cheatsheets
+
+          -- For generic cheatsheets like default, unicode, nerd-fonts, etc
+          bundled_cheatsheets = true,
+          -- bundled_cheatsheets = {
+          --     enabled = {},
+          --     disabled = {},
+          -- },
+
+          -- For plugin specific cheatsheets
+          bundled_plugin_cheatsheets = true,
+          -- bundled_plugin_cheatsheets = {
+          --     enabled = {},
+          --     disabled = {},
+          -- }
+
+          -- For bundled plugin cheatsheets, do not show a sheet if you
+          -- don't have the plugin installed (searches runtimepath for
+          -- same directory name)
+          include_only_installed_plugins = true,
       })
+      vim.api.nvim_set_keymap("n", "<Bslash>h", ":Cheatsheet<Enter>",
+        { silent = true, noremap = true }
+      )
     end
   }
+
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
 -- }
+
+vim.opt.termguicolors = true
 
 vim.api.nvim_exec([[
   augroup ScrollbarInit
