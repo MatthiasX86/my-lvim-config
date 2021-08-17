@@ -40,16 +40,16 @@ lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
 lvim.format_on_save = true
 
-lvim.lang.javascript.linters = { { exe = 'eslint_d│eslint' } }
-lvim.lang.javascript.formatting = { { exe = 'prettier_d_slim|prettier' } }
-lvim.lang.javascriptreact.linters = { { exe = 'eslint_d│eslint' } }
-lvim.lang.javascriptreact.formatting = { { exe = 'prettier_d_slim|prettier' } }
+lvim.lang.javascript.linters = { { exe = 'eslint' } }
+lvim.lang.javascript.formatting = { { exe = 'prettierd' } }
+lvim.lang.javascriptreact.linters = { { exe = 'eslint' } }
+lvim.lang.javascriptreact.formatting = { { exe = 'prettierd' } }
 
 
-lvim.lang.typescript.linters = { { exe = 'eslint_d│eslint' } }
-lvim.lang.typescript.formatting = { { exe = 'prettier_d_slim|prettier' } }
-lvim.lang.typescriptreact.linters = { { exe = 'eslint_d│eslint' } }
-lvim.lang.typescriptreact.formatting = { { exe = 'prettier_d_slim|prettier' } }
+lvim.lang.typescript.linters = { { exe = 'eslint' } }
+lvim.lang.typescript.formatting = { { exe = 'prettier' } }
+lvim.lang.typescriptreact.linters = { { exe = 'eslint' } }
+lvim.lang.typescriptreact.formatting = { { exe = 'prettier' } }
 
 
 -- telescope config settings
@@ -501,7 +501,7 @@ lvim.plugins = {
       require('lualine').setup {
         options = {
           -- ... your lualine config
-          theme = "nightfox"
+          theme = "nordfox"
         }
       }
     end
