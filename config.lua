@@ -562,21 +562,21 @@ lvim.plugins = {
     end
   },
 
-  {
-    "vuki656/package-info.nvim",
-    config = function()
-      require('package-info').setup()
-      -- Display latest versions as virtual text
-      vim.api.nvim_set_keymap("n", "<Bslash>ns", "<cmd>lua require('package-info').show()<cr>",
-        { silent = true, noremap = true }
-      )
+--   {
+--     "vuki656/package-info.nvim",
+--     config = function()
+--       require('package-info').setup()
+--       -- Display latest versions as virtual text
+--       vim.api.nvim_set_keymap("n", "<Bslash>ns", "<cmd>lua require('package-info').show()<cr>",
+--         { silent = true, noremap = true }
+--       )
 
-      -- Clear package info virtual text
-      vim.api.nvim_set_keymap("n", "<Bslash>nc", "<cmd>lua require('package-info').hide()<cr>",
-        { silent = true, noremap = true }
-      )
-    end
-  },
+--       -- Clear package info virtual text
+--       vim.api.nvim_set_keymap("n", "<Bslash>nc", "<cmd>lua require('package-info').hide()<cr>",
+--         { silent = true, noremap = true }
+--       )
+--     end
+--   },
 
   {
     'sudormrfbin/cheatsheet.nvim',
