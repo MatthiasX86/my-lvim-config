@@ -9,6 +9,7 @@ an executable
 -- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
 
 -- general
+--
 lvim.log.level = "warn"
 lvim.format_on_save = true
 lvim.colorscheme = "nightfox"
@@ -53,6 +54,7 @@ lvim.builtin.dashboard.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
+lvim.builtin.dap.active = true
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = "maintained"
@@ -220,6 +222,10 @@ lvim.plugins = {
       }
       vim.api.nvim_set_keymap("n", "<Bslash>d", ":DiffviewOpen<Enter>", { noremap = true, silent = true })
     end
+  },
+
+  {
+    "tpope/vim-liquid"
   },
 
   {
@@ -655,9 +661,60 @@ lvim.plugins = {
       lspconfig.emmet_ls.setup({ capabilities = capabilities })
     end,
   },
+
+  {
+    'michaelb/sniprun',
+    run = 'bash ./install.sh',
+    config = function()
+      require("sniprun").setup({
+        selected_interpreters = {},     --# use those instead of the default for the current filetype
+        repl_enable = {},               --# enable REPL-like behavior for the given interpreters
+        repl_disable = {},              --# disable REPL-like behavior for the given interpreters
+
+        interpreter_options = {},       --# intepreter-specific options, consult docs / :SnipInfo <name>
+
+        --# you can combo different display modes as desired
+        display = {
+          "Classic",                    --# display results in the command-line  area
+          "VirtualTextOk",              --# display ok results as virtual text (multiline is shortened)
+
+          -- "VirtualTextErr",          --# display error results as virtual text
+          -- "TempFloatingWindow",      --# display results in a floating window
+          -- "LongTempFloatingWindow",  --# same as above, but only long results. To use with VirtualText__
+          -- "Terminal",                --# display results in a vertical split
+          -- "NvimNotify",              --# display with the nvim-notify plugin
+          -- "Api"                      --# return output to a programming interface
+        },
+
+        --# You can use the same keys to customize whether a sniprun producing
+        --# no output should display nothing or '(no output)'
+        show_no_output = {
+          "Classic",
+          "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
+        },
+
+        --# customize highlight groups (setting this overrides colorscheme)
+        snipruncolors = {
+          SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+          SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
+          SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+          SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
+        },
+
+        --# miscellaneous compatibility/adjustement settings
+        inline_messages = 0,             --# inline_message (0/1) is a one-line way to display messages
+                 --# to workaround sniprun not being able to display anything
+
+        borders = 'single'               --# display borders around floating windows
+                                         --# possible values are 'none', 'single', 'double', or 'shadow'
+      })
+    end,
+  },
+
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
 -- }
+
