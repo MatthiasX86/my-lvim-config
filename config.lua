@@ -548,7 +548,7 @@ lvim.plugins = {
       require('lualine').setup {
         options = {
           -- ... your lualine config
-          theme = "nordfox"
+          theme = "nightfox"
         }
       }
     end
@@ -712,6 +712,10 @@ lvim.plugins = {
   },
 
 }
+
+require'lspconfig'.tailwindcss.setup{}
+require'lspconfig'.cssmodules_ls.setup{}
+
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
