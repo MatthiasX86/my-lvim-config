@@ -1,72 +1,100 @@
--- general
-lvim.format_on_save = true
-lvim.lint_on_save = true
-lvim.colorscheme = "nightfox"
--- tokyonight
+--[[
+lvim is the global options object
 
--- keymappings
+Linters should be
+filled in as strings with either
+a global executable or a path to
+an executable
+]]
+-- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
+
+-- general
+lvim.log.level = "warn"
+lvim.format_on_save = true
+lvim.colorscheme = "onedarker"
+
+-- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
--- overwrite the key-mappings provided by LunarVim for any mode, or leave it empty to keep them
--- lvim.keys.normal_mode = {
---   Page down/up
---   {'[d', '<PageUp>'},
---   {']d', '<PageDown>'},
---
---   Navigate buffers
---   {'<Tab>', ':bnext<CR>'},
---   {'<S-Tab>', ':bprevious<CR>'},
+-- add your own keymapping
+lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+-- unmap a default keymapping
+-- lvim.keys.normal_mode["<C-Up>"] = false
+-- edit a default keymapping
+-- lvim.keys.normal_mode["<C-q>"] = ":q<cr>"
+
+-- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
+-- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
+-- local _, actions = pcall(require, "telescope.actions")
+-- lvim.builtin.telescope.defaults.mappings = {
+--   -- for input mode
+--   i = {
+--     ["<C-j>"] = actions.move_selection_next,
+--     ["<C-k>"] = actions.move_selection_previous,
+--     ["<C-n>"] = actions.cycle_history_next,
+--     ["<C-p>"] = actions.cycle_history_prev,
+--   },
+--   -- for normal mode
+--   n = {
+--     ["<C-j>"] = actions.move_selection_next,
+--     ["<C-k>"] = actions.move_selection_previous,
+--   },
 -- }
--- if you just want to augment the existing ones then use the utility function
--- require("utils").add_keymap_insert_mode({ silent = true }, {
--- { "<C-s>", ":w<cr>" },
--- { "<C-c>", "<ESC>" },
--- })
--- you can also use the native vim way directly
--- vim.api.nvim_set_keymap("i", "<C-Space>", "compe#complete()", { noremap = true, silent = true, expr = true })
+
+-- Use which-key to add extra bindings with the leader-key prefix
+-- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
+-- lvim.builtin.which_key.mappings["t"] = {
+--   name = "+Trouble",
+--   r = { "<cmd>Trouble lsp_references<cr>", "References" },
+--   f = { "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
+--   d = { "<cmd>Trouble document_diagnostics<cr>", "Diagnostics" },
+--   q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
+--   l = { "<cmd>Trouble loclist<cr>", "LocationList" },
+--   w = { "<cmd>Trouble workspace_diagnostics<cr>", "Wordspace Diagnostics" },
+-- }
 
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
-lvim.builtin.dashboard.active = true
+lvim.builtin.alpha.active = true
+lvim.builtin.alpha.mode = "dashboard"
+lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
-lvim.builtin.nvimtree.side = "left"
+lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
-lvim.builtin.dap.active = true
-lvim.builtin.terminal.active = true
-lvim.builtin.galaxyline.active = false
 
 -- if you don't want all the parsers change this to a table of the ones you want
-lvim.builtin.treesitter.ensure_installed = {}
-lvim.builtin.treesitter.ignore_install = { "haskell" }
-lvim.builtin.treesitter.highlight.enabled = true
-lvim.format_on_save = true
-
-lvim.lang.javascript.linters = { { exe = 'eslint' } }
-lvim.lang.javascript.formatting = { { exe = 'prettierd' } }
-lvim.lang.javascriptreact.linters = { { exe = 'eslint' } }
-lvim.lang.javascriptreact.formatting = { { exe = 'prettierd' } }
-
-
-lvim.lang.typescript.linters = { { exe = 'eslint' } }
-lvim.lang.typescript.formatting = { { exe = 'prettier' } }
-lvim.lang.typescriptreact.linters = { { exe = 'eslint' } }
-lvim.lang.typescriptreact.formatting = { { exe = 'prettier' } }
-
-
--- telescope config settings
-lvim.builtin.telescope.extensions = {
-	fzy_native = {
-		override_generic_sorter = false,
-		override_file_sorter = true,
-	},
+lvim.builtin.treesitter.ensure_installed = {
+  "bash",
+  "c",
+  "javascript",
+  "json",
+  "lua",
+  "python",
+  "typescript",
+  "tsx",
+  "css",
+  "rust",
+  "java",
+  "yaml",
 }
 
-lvim.builtin.telescope.on_config_done = function()
-	require("telescope").load_extension("fzy_native")
-end
+lvim.builtin.treesitter.ignore_install = { "haskell" }
+lvim.builtin.treesitter.highlight.enabled = true
 
 -- generic LSP settings
--- you can set a custom on_attach function that will be used for all the language servers
--- See <https://github.com/neovim/nvim-lspconfig#keybindings-and-completion>
+
+-- ---@usage disable automatic installation of servers
+-- lvim.lsp.automatic_servers_installation = false
+
+-- ---@usage Select which servers should be configured manually. Requires `:LvimCacheReset` to take effect.
+-- See the full default list `:lua print(vim.inspect(lvim.lsp.override))`
+-- vim.list_extend(lvim.lsp.override, { "pyright" })
+
+-- ---@usage setup a server -- see: https://www.lunarvim.org/languages/#overriding-the-default-configuration
+-- local opts = {} -- check the lspconfig documentation for a list of all possible options
+-- require("lvim.lsp.manager").setup("pylsp", opts)
+
+-- -- you can set a custom on_attach function that will be used for all the language servers
+-- -- See <https://github.com/neovim/nvim-lspconfig#keybindings-and-completion>
 -- lvim.lsp.on_attach_callback = function(client, bufnr)
 --   local function buf_set_option(...)
 --     vim.api.nvim_buf_set_option(bufnr, ...)
@@ -75,12 +103,46 @@ end
 --   buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 -- end
 
+-- -- set a formatter, this will override the language server formatting capabilities (if it exists)
+-- local formatters = require "lvim.lsp.null-ls.formatters"
+-- formatters.setup {
+--   { command = "black", filetypes = { "python" } },
+--   { command = "isort", filetypes = { "python" } },
+--   {
+--     -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
+--     command = "prettier",
+--     ---@usage arguments to pass to the formatter
+--     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
+--     extra_args = { "--print-with", "100" },
+--     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+--     filetypes = { "typescript", "typescriptreact" },
+--   },
+-- }
+
+-- -- set additional linters
+-- local linters = require "lvim.lsp.null-ls.linters"
+-- linters.setup {
+--   { command = "flake8", filetypes = { "python" } },
+--   {
+--     -- each linter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
+--     command = "shellcheck",
+--     ---@usage arguments to pass to the formatter
+--     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
+--     extra_args = { "--severity", "warning" },
+--   },
+--   {
+--     command = "codespell",
+--     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+--     filetypes = { "javascript", "python" },
+--   },
+-- }
+
 -- Additional Plugins
 lvim.plugins = {
-  {"folke/tokyonight.nvim"}, {
-      "ray-x/lsp_signature.nvim",
-      config = function() require"lsp_signature".on_attach() end,
-      event = {"InsertEnter"}
+  { "folke/tokyonight.nvim" }, {
+    "ray-x/lsp_signature.nvim",
+    config = function() require "lsp_signature".on_attach() end,
+    event = { "InsertEnter" }
   },
 
   {
@@ -97,8 +159,8 @@ lvim.plugins = {
     "ethanholz/nvim-lastplace",
     event = "BufRead",
     config = function()
-      require'nvim-lastplace'.setup {
-        lastplace_ignore_buftype = {"quickfix", "nofile", "help"},
+      require 'nvim-lastplace'.setup {
+        lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
         lastplace_ignore_filetype = {
           "gitcommit", "gitrebase", "svn", "hgcommit"
         },
@@ -123,7 +185,7 @@ lvim.plugins = {
 
   {
     "pwntester/octo.nvim",
-      event = "BufRead",
+    event = "BufRead",
   },
 
   {
@@ -139,37 +201,37 @@ lvim.plugins = {
     "sindrets/diffview.nvim",
     event = "BufRead",
     config = function()
-      local cb = require'diffview.config'.diffview_callback
+      local cb = require 'diffview.config'.diffview_callback
 
       require('diffview').setup {
-        diff_binaries = false,    -- Show diffs for binaries
+        diff_binaries = false, -- Show diffs for binaries
         file_panel = {
           width = 35,
-          use_icons = true        -- Requires nvim-web-devicons
+          use_icons = true -- Requires nvim-web-devicons
         },
         key_bindings = {
-          disable_defaults = false,                   -- Disable the default key bindings
+          disable_defaults = false, -- Disable the default key bindings
           -- The `view` bindings are active in the diff buffers, only when the current
           -- tabpage is a Diffview.
           view = {
-            ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file
-            ["<s-tab>"]   = cb("select_prev_entry"),  -- Open the diff for the previous file
-            ["<leader>e"] = cb("focus_files"),        -- Bring focus to the files panel
-            ["<leader>b"] = cb("toggle_files"),       -- Toggle the files panel.
+            ["<tab>"]     = cb("select_next_entry"), -- Open the diff for the next file
+            ["<s-tab>"]   = cb("select_prev_entry"), -- Open the diff for the previous file
+            ["<leader>e"] = cb("focus_files"), -- Bring focus to the files panel
+            ["<leader>b"] = cb("toggle_files"), -- Toggle the files panel.
           },
           file_panel = {
-            ["j"]             = cb("next_entry"),         -- Bring the cursor to the next file entry
+            ["j"]             = cb("next_entry"), -- Bring the cursor to the next file entry
             ["<down>"]        = cb("next_entry"),
-            ["k"]             = cb("prev_entry"),         -- Bring the cursor to the previous file entry.
+            ["k"]             = cb("prev_entry"), -- Bring the cursor to the previous file entry.
             ["<up>"]          = cb("prev_entry"),
-            ["<cr>"]          = cb("select_entry"),       -- Open the diff for the selected entry.
+            ["<cr>"]          = cb("select_entry"), -- Open the diff for the selected entry.
             ["o"]             = cb("select_entry"),
             ["<2-LeftMouse>"] = cb("select_entry"),
             ["-"]             = cb("toggle_stage_entry"), -- Stage / unstage the selected entry.
-            ["S"]             = cb("stage_all"),          -- Stage all entries.
-            ["U"]             = cb("unstage_all"),        -- Unstage all entries.
-            ["X"]             = cb("restore_entry"),      -- Restore entry to the state on the left side.
-            ["R"]             = cb("refresh_files"),      -- Update stats and entries in the file list.
+            ["S"]             = cb("stage_all"), -- Stage all entries.
+            ["U"]             = cb("unstage_all"), -- Unstage all entries.
+            ["X"]             = cb("restore_entry"), -- Restore entry to the state on the left side.
+            ["R"]             = cb("refresh_files"), -- Update stats and entries in the file list.
             ["<tab>"]         = cb("select_next_entry"),
             ["<s-tab>"]       = cb("select_prev_entry"),
             ["<leader>e"]     = cb("focus_files"),
@@ -202,7 +264,7 @@ lvim.plugins = {
       "Glgrep",
       "Gedit"
     },
-    ft = {"fugitive"}
+    ft = { "fugitive" }
   },
 
   {
@@ -242,16 +304,16 @@ lvim.plugins = {
     config = function()
       require('goto-preview').setup {
         width = 120; -- Width of the floating window
-          height = 25; -- Height of the floating window
-          default_mappings = true; -- Bind default mappings
-          debug = true; -- Print debug information
-          opacity = nil; -- 0-100 opacity level of the floating window where 100 is fully transparent.
-          post_open_hook = nil -- A function taking two arguments, a buffer and a window to be ran as a hook.
-          -- You can use "default_mappings = true" setup option
-          -- Or explicitly set keybindings
-          -- vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>")
-          -- vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>")
-          -- vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>")
+        height = 25; -- Height of the floating window
+        default_mappings = true; -- Bind default mappings
+        debug = true; -- Print debug information
+        opacity = nil; -- 0-100 opacity level of the floating window where 100 is fully transparent.
+        post_open_hook = nil -- A function taking two arguments, a buffer and a window to be ran as a hook.
+        -- You can use "default_mappings = true" setup option
+        -- Or explicitly set keybindings
+        -- vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>")
+        -- vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>")
+        -- vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>")
       }
     end
   },
@@ -301,13 +363,13 @@ lvim.plugins = {
 
   {
     "turbio/bracey.vim",
-    cmd = {"Bracey", "BracyStop", "BraceyReload", "BraceyEval"},
+    cmd = { "Bracey", "BracyStop", "BraceyReload", "BraceyEval" },
     run = "npm install --prefix server",
   },
 
   {
     "npxbr/glow.nvim",
-    ft = {"markdown"}
+    ft = { "markdown" }
     -- run = "yay -S glow"
   },
 
@@ -340,22 +402,22 @@ lvim.plugins = {
 
   {
     "itchyny/vim-cursorword",
-      event = {"BufEnter", "BufNewFile"},
-      config = function()
-        vim.api.nvim_command("augroup user_plugin_cursorword")
-        vim.api.nvim_command("autocmd!")
-        vim.api.nvim_command("autocmd FileType NvimTree,lspsagafinder,dashboard,vista let b:cursorword = 0")
-        vim.api.nvim_command("autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif")
-        vim.api.nvim_command("autocmd InsertEnter * let b:cursorword = 0")
-        vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
-        vim.api.nvim_command("augroup END")
-      end
+    event = { "BufEnter", "BufNewFile" },
+    config = function()
+      vim.api.nvim_command("augroup user_plugin_cursorword")
+      vim.api.nvim_command("autocmd!")
+      vim.api.nvim_command("autocmd FileType NvimTree,lspsagafinder,dashboard,vista let b:cursorword = 0")
+      vim.api.nvim_command("autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif")
+      vim.api.nvim_command("autocmd InsertEnter * let b:cursorword = 0")
+      vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
+      vim.api.nvim_command("augroup END")
+    end
   },
 
   {
     "tpope/vim-surround",
-    event = {"BufEnter", "BufRead"},
-    keys = {"c", "d", "y"}
+    event = { "BufEnter", "BufRead" },
+    keys = { "c", "d", "y" }
   },
 
   {
@@ -369,16 +431,16 @@ lvim.plugins = {
     config = function()
       require('neoscroll').setup({
         -- All these keys will be mapped to their corresponding default scrolling animation
-        mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>',
-        '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
-        hide_cursor = true,          -- Hide cursor while scrolling
-        stop_eof = true,             -- Stop at <EOF> when scrolling downwards
+        mappings = { '<C-u>', '<C-d>', '<C-b>', '<C-f>',
+          '<C-y>', '<C-e>', 'zt', 'zz', 'zb' },
+        hide_cursor = true, -- Hide cursor while scrolling
+        stop_eof = true, -- Stop at <EOF> when scrolling downwards
         use_local_scrolloff = false, -- Use the local scope of scrolloff instead of the global scope
-        respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+        respect_scrolloff = false, -- Stop scrolling when the cursor reaches the scrolloff margin of the file
         cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
-        easing_function = nil,        -- Default easing function
-        pre_hook = nil,              -- Function to run before the scrolling animation starts
-        post_hook = nil,              -- Function to run after the scrolling animation ends
+        easing_function = nil, -- Default easing function
+        pre_hook = nil, -- Function to run before the scrolling animation starts
+        post_hook = nil, -- Function to run after the scrolling animation ends
       })
     end
   },
@@ -398,7 +460,7 @@ lvim.plugins = {
   {
     "s1n7ax/nvim-comment-frame",
     requires = {
-        { 'nvim-treesitter' }
+      { 'nvim-treesitter' }
     },
     config = function()
       require('nvim-comment-frame').setup({
@@ -409,20 +471,20 @@ lvim.plugins = {
           -- @NOTE global configuration will be overridden by language level
           -- configuration if provided
           lua = {
-              -- start the comment with this string
-              start_str = '--[[',
-              -- end the comment line with this string
-              end_str = ']]--',
-              -- fill the comment frame border with this character
-              fill_char = '*',
-              -- width of the comment frame
-              frame_width = 100,
-              -- wrap the line after 'n' characters
-              line_wrap_len = 70,
-              -- automatically indent the comment frame based on the line
-              auto_indent = false,
-              -- add comment above the current line
-              add_comment_above = false,
+            -- start the comment with this string
+            start_str = '--[[',
+            -- end the comment line with this string
+            end_str = ']]--',
+            -- fill the comment frame border with this character
+            fill_char = '*',
+            -- width of the comment frame
+            frame_width = 100,
+            -- wrap the line after 'n' characters
+            line_wrap_len = 70,
+            -- automatically indent the comment frame based on the line
+            auto_indent = false,
+            -- add comment above the current line
+            add_comment_above = false,
           },
         }
       })
@@ -462,7 +524,7 @@ lvim.plugins = {
             showcmd = false, -- disables the command in the last line of the screen
           },
           twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
-          gitsigns = { enabled = false }, -- disables git signs
+          gitsigns = { enabled = true }, -- disables git signs
           tmux = { enabled = false }, -- disables the tmux statusline
           -- this will change the font size on kitty when in zen mode
           -- to make this work, you need to set the following kitty options:
@@ -498,12 +560,7 @@ lvim.plugins = {
   {
     "EdenEast/nightfox.nvim",
     config = function()
-      require('lualine').setup {
-        options = {
-          -- ... your lualine config
-          theme = "nordfox"
-        }
-      }
+      require('lualine').setup()
     end
   },
 
@@ -511,7 +568,7 @@ lvim.plugins = {
     "lukas-reineke/indent-blankline.nvim",
     config = function()
       require("indent_blankline").setup {
-        buftype_exclude = {"terminal"}
+        buftype_exclude = { "terminal" }
       }
       vim.g.indent_blankline_space_char = '.'
       vim.g.indent_blankline_show_first_indent_level = false
@@ -525,7 +582,6 @@ lvim.plugins = {
     'hoob3rt/lualine.nvim',
     config = function()
       require('lualine').setup {
-
         options = {
           theme = 'horizon',
           lower = true,
@@ -533,54 +589,43 @@ lvim.plugins = {
         },
       }
     end,
-    requires = {'kyazdani42/nvim-web-devicons', opt = true}
+    requires = { 'kyazdani42/nvim-web-devicons', opt = true }
   },
 
   {
     "vuki656/package-info.nvim",
-    config = function()
-      require('package-info').setup()
-      -- Display latest versions as virtual text
-      vim.api.nvim_set_keymap("n", "<Bslash>ns", "<cmd>lua require('package-info').show()<cr>",
-        { silent = true, noremap = true }
-      )
-
-      -- Clear package info virtual text
-      vim.api.nvim_set_keymap("n", "<Bslash>nc", "<cmd>lua require('package-info').hide()<cr>",
-        { silent = true, noremap = true }
-      )
-    end
+    requires = "MunifTanjim/nui.nvim",
   },
 
   {
     'sudormrfbin/cheatsheet.nvim',
     requires = {
-      {'nvim-telescope/telescope.nvim'},
-      {'nvim-lua/popup.nvim'},
-      {'nvim-lua/plenary.nvim'},
+      { 'nvim-telescope/telescope.nvim' },
+      { 'nvim-lua/popup.nvim' },
+      { 'nvim-lua/plenary.nvim' },
     },
     config = function()
       require("cheatsheet").setup({
-          -- Whether to show bundled cheatsheets
+        -- Whether to show bundled cheatsheets
 
-          -- For generic cheatsheets like default, unicode, nerd-fonts, etc
-          bundled_cheatsheets = true,
-          -- bundled_cheatsheets = {
-          --     enabled = {},
-          --     disabled = {},
-          -- },
+        -- For generic cheatsheets like default, unicode, nerd-fonts, etc
+        bundled_cheatsheets = true,
+        -- bundled_cheatsheets = {
+        --     enabled = {},
+        --     disabled = {},
+        -- },
 
-          -- For plugin specific cheatsheets
-          bundled_plugin_cheatsheets = true,
-          -- bundled_plugin_cheatsheets = {
-          --     enabled = {},
-          --     disabled = {},
-          -- }
+        -- For plugin specific cheatsheets
+        bundled_plugin_cheatsheets = true,
+        -- bundled_plugin_cheatsheets = {
+        --     enabled = {},
+        --     disabled = {},
+        -- }
 
-          -- For bundled plugin cheatsheets, do not show a sheet if you
-          -- don't have the plugin installed (searches runtimepath for
-          -- same directory name)
-          include_only_installed_plugins = true,
+        -- For bundled plugin cheatsheets, do not show a sheet if you
+        -- don't have the plugin installed (searches runtimepath for
+        -- same directory name)
+        include_only_installed_plugins = true,
       })
       vim.api.nvim_set_keymap("n", "<Bslash>h", ":Cheatsheet<Enter>",
         { silent = true, noremap = true }
@@ -630,22 +675,13 @@ lvim.plugins = {
     end,
   },
 
+  {
+    "michaelb/sniprun",
+    run = 'bash ./install.sh',
+  }
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
 -- }
-
-vim.opt.termguicolors = true
-
-vim.api.nvim_exec([[
-  augroup ScrollbarInit
-    autocmd!
-    autocmd CursorMoved,VimResized,QuitPre * silent! lua require('scrollbar').show()
-    autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
-    autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require('scrollbar').clear()
-  augroup end
-]], false)
-
--- Additional Leader bindings for WhichKey
