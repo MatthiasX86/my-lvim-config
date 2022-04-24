@@ -678,8 +678,253 @@ lvim.plugins = {
   {
     "michaelb/sniprun",
     run = 'bash ./install.sh',
+  },
+
+  {
+    "luukvbaal/stabilize.nvim",
+    config = function() require("stabilize").setup() end
+  },
+
+  {
+    "romgrk/nvim-treesitter-context",
+    config = function()
+      require 'treesitter-context'.setup {
+        enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+        throttle = true, -- Throttles plugin updates (may improve performance)
+        max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+        patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+          -- For all filetypes
+          -- Note that setting an entry here replaces all other patterns for this entry.
+          -- By setting the 'default' entry below, you can control which nodes you want to
+          -- appear in the context window.
+          default = {
+            'class',
+            'function',
+            'method',
+            -- 'for', -- These won't appear in the context
+            -- 'while',
+            -- 'if',
+            -- 'switch',
+            -- 'case',
+          },
+          -- Example for a specific filetype.
+          -- If a pattern is missing, *open a PR* so everyone can benefit.
+          --   rust = {
+          --       'impl_item',
+          --   },
+        },
+        exact_patterns = {
+          -- Example for a specific filetype with Lua patterns
+          -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
+          -- exactly match "impl_item" only)
+          -- rust = true,
+        }
+      }
+    end
+  },
+
+  {
+    "edluffy/specs.nvim",
+    config = function()
+      require('specs').setup {
+        show_jumps       = true,
+        min_jump         = 30,
+        popup            = {
+          delay_ms = 0, -- delay before popup displays
+          inc_ms = 10, -- time increments used for fade/resize effects
+          blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
+          width = 10,
+          winhl = "PMenu",
+          fader = require('specs').linear_fader,
+          resizer = require('specs').shrink_resizer
+        },
+        ignore_filetypes = {},
+        ignore_buftypes  = {
+          nofile = true,
+        },
+      }
+    end
+  },
+
+  {
+    'tanvirtin/vgit.nvim',
+    config = function()
+      require('vgit').setup()
+      vim.api.nvim_set_keymap("n", "<Bslash>gbd", ":VGit buffer_diff_preview<Enter>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>gbh", ":VGit buffer_history_preview<Enter>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>gbp", ":VGit buffer_blame_preview<Enter>", { noremap = true, silent = true })
+    end,
+    requires = { 'nvim-lua/plenary.nvim' }
+  },
+
+  {
+    'lewis6991/spellsitter.nvim',
+    config = function()
+      require('spellsitter').setup {
+        -- Whether enabled, can be a list of filetypes, e.g. {'python', 'lua'}
+        enable = true,
+      }
+      vim.api.nvim_set_keymap("n", "<Bslash>sp", ":set spell<Enter>", { noremap = true, silent = true })
+    end
+  },
+
+  {
+    "davidgranstrom/nvim-markdown-preview",
+    config = function()
+      vim.api.nvim_set_keymap("n", "<Bslash>mp", ":MarkdownPreview<Enter>", { noremap = true, silent = true })
+    end
+  },
+
+  {
+    "jamestthompson3/nvim-remote-containers",
+    -- look into the docs, there is a way to set current container to statusline
+  },
+
+  {
+    "sindrets/winshift.nvim",
+    config = function()
+      require("winshift").setup({
+        highlight_moving_win = true, -- Highlight the window being moved
+        focused_hl_group = "Visual", -- The highlight group used for the moving window
+        moving_win_options = {
+          -- These are local options applied to the moving window while it's
+          -- being moved. They are unset when you leave Win-Move mode.
+          wrap = false,
+          cursorline = false,
+          cursorcolumn = false,
+          colorcolumn = "",
+        },
+        -- The window picker is used to select a window while swapping windows with
+        -- ':WinShift swap'.
+        -- A string of chars used as identifiers by the window picker.
+        window_picker_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+        window_picker_ignore = {
+          -- This table allows you to indicate to the window picker that a window
+          -- should be ignored if its buffer matches any of the following criteria.
+          filetype = { -- List of ignored file types
+            "NvimTree",
+          },
+          buftype = { -- List of ignored buftypes
+            "terminal",
+            "quickfix",
+          },
+          bufname = { -- List of regex patterns matching ignored buffer names
+            [[.*foo/bar/baz\.qux]]
+          },
+        },
+      })
+      vim.api.nvim_set_keymap("n", "<Bslash>ws", ":WinShift swap<Enter>", { noremap = true, silent = true })
+
+      vim.api.nvim_set_keymap("n", "<Bslash>wh", ":WinShift left<Enter>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>w<S-h>", ":WinShift far_left<Enter>", { noremap = true, silent = true })
+
+      vim.api.nvim_set_keymap("n", "<Bslash>wl", ":WinShift right<Enter>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>w<S-l>", ":WinShift far_right<Enter>", { noremap = true, silent = true })
+
+      vim.api.nvim_set_keymap("n", "<Bslash>wj", ":WinShift down<Enter>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>w<S-j>", ":WinShift far_down<Enter>", { noremap = true, silent = true })
+
+      vim.api.nvim_set_keymap("n", "<Bslash>wk", ":WinShift up<Enter>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>w<S-k>", ":WinShift far_up<Enter>", { noremap = true, silent = true })
+    end
+  },
+
+  {
+    "petertriho/nvim-scrollbar",
+    requires = "kevinhwang91/nvim-hlslens",
+    config = function()
+      require("scrollbar").setup({
+        show = true,
+        set_highlights = true,
+        handle = {
+          text = " ",
+          color = nil,
+          cterm = nil,
+          highlight = "CursorColumn",
+          hide_if_all_visible = true, -- Hides handle if all lines are visible
+        },
+        marks = {
+          Search = {
+            text = { "-", "=" },
+            priority = 0,
+            color = nil,
+            cterm = nil,
+            highlight = "Search",
+          },
+          Error = {
+            text = { "-", "=" },
+            priority = 1,
+            color = nil,
+            cterm = nil,
+            highlight = "DiagnosticVirtualTextError",
+          },
+          Warn = {
+            text = { "-", "=" },
+            priority = 2,
+            color = nil,
+            cterm = nil,
+            highlight = "DiagnosticVirtualTextWarn",
+          },
+          Info = {
+            text = { "-", "=" },
+            priority = 3,
+            color = nil,
+            cterm = nil,
+            highlight = "DiagnosticVirtualTextInfo",
+          },
+          Hint = {
+            text = { "-", "=" },
+            priority = 4,
+            color = nil,
+            cterm = nil,
+            highlight = "DiagnosticVirtualTextHint",
+          },
+          Misc = {
+            text = { "-", "=" },
+            priority = 5,
+            color = nil,
+            cterm = nil,
+            highlight = "Normal",
+          },
+        },
+        excluded_buftypes = {
+          "terminal",
+        },
+        excluded_filetypes = {
+          "prompt",
+          "TelescopePrompt",
+        },
+        autocmd = {
+          render = {
+            "BufWinEnter",
+            "TabEnter",
+            "TermEnter",
+            "WinEnter",
+            "CmdwinLeave",
+            "TextChanged",
+            "VimResized",
+            "WinScrolled",
+          },
+        },
+        handlers = {
+          diagnostic = true,
+          search = false, -- Requires hlslens to be loaded, will run require("scrollbar.handlers.search").setup() for you
+        },
+      })
+      require("scrollbar.handlers.search").setup()
+    end
+  },
+
+  {
+    'kevinhwang91/nvim-hlslens'
   }
 }
+
+-- this isn't working...
+-- require('specs').toggle()
+
+require 'lspconfig'.tailwindcss.setup {}
+require 'lspconfig'.cssmodules_ls.setup {}
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
