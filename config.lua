@@ -284,10 +284,10 @@ lvim.plugins = {
     "p00f/nvim-ts-rainbow",
   },
 
-  {
-    "JoosepAlviste/nvim-ts-context-commentstring",
-    event = "BufRead",
-  },
+  -- {
+  --   "JoosepAlviste/nvim-ts-context-commentstring",
+  --   event = "BufRead",
+  -- },
 
   {
     "nvim-telescope/telescope-fzy-native.nvim",
@@ -371,15 +371,6 @@ lvim.plugins = {
     "npxbr/glow.nvim",
     ft = { "markdown" }
     -- run = "yay -S glow"
-  },
-
-  {
-    "ahmedkhalf/lsp-rooter.nvim",
-    event = "BufRead",
-    config = function()
-      require("lsp-rooter").setup()
-      vim.api.nvim_set_keymap("n", "<Bslash>r", ":rooter<Enter>", { noremap = true, silent = true })
-    end,
   },
 
   {
@@ -578,19 +569,19 @@ lvim.plugins = {
     end
   },
 
-  {
-    'hoob3rt/lualine.nvim',
-    config = function()
-      require('lualine').setup {
-        options = {
-          theme = 'horizon',
-          lower = true,
-          upper = true,
-        },
-      }
-    end,
-    requires = { 'kyazdani42/nvim-web-devicons', opt = true }
-  },
+  -- {
+  --   'hoob3rt/lualine.nvim',
+  --   config = function()
+  --     require('lualine').setup {
+  --       options = {
+  --         theme = 'horizon',
+  --         lower = true,
+  --         upper = true,
+  --       },
+  --     }
+  --   end,
+  --   requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+  -- },
 
   {
     "vuki656/package-info.nvim",
@@ -734,7 +725,7 @@ lvim.plugins = {
           inc_ms = 10, -- time increments used for fade/resize effects
           blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
           width = 10,
-          winhl = "PMenu",
+          winhl = "pulse_fader",
           fader = require('specs').linear_fader,
           resizer = require('specs').shrink_resizer
         },
@@ -917,6 +908,78 @@ lvim.plugins = {
 
   {
     'kevinhwang91/nvim-hlslens'
+  },
+
+  {
+    'weilbith/nvim-code-action-menu',
+    cmd = 'CodeActionMenu',
+  },
+
+  {
+    'gelguy/wilder.nvim',
+    config = function()
+      -- config goes here
+    end,
+  },
+
+  {
+    "NTBBloodbath/rest.nvim",
+    requires = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("rest-nvim").setup({
+        -- Open request results in a horizontal split
+        result_split_horizontal = false,
+        -- Keep the http file buffer above|left when split horizontal|vertical
+        result_split_in_place = false,
+        -- Skip SSL verification, useful for unknown certificates
+        skip_ssl_verification = false,
+        -- Highlight request on run
+        highlight = {
+          enabled = true,
+          timeout = 150,
+        },
+        result = {
+          -- toggle showing URL, HTTP info, headers at top the of result window
+          show_url = true,
+          show_http_info = true,
+          show_headers = true,
+        },
+        -- Jump to request line on run
+        jump_to_request = false,
+        env_file = '.env',
+        custom_dynamic_variables = {},
+        yank_dry_run = true,
+      })
+      vim.api.nvim_set_keymap("n", "<Bslash>rr", "<Plug>RestNvim", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>rp", "<Plug>RestNvimPreview", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>rl", "<Plug>RestNvimLast", { noremap = true, silent = true })
+    end
+  },
+
+  {
+    "nanotee/sqls.nvim",
+    config = function()
+      require 'lspconfig'.sqls.setup {
+        on_attach = function(client, bufnr)
+          require('sqls').on_attach(client, bufnr)
+        end
+      }
+    end
+  },
+
+  {
+    "mzarnitsa/psql",
+    config = function()
+      require('psql').setup({
+        database_name     = 'postgres',
+        execute_line      = '<Bslash>pl',
+        execute_selection = '<Bslash>ps',
+        execute_paragraph = '<Bslash>pp',
+
+        -- close_latest_result = '<Bslash>p',
+        close_all_results = '<Bslash>pc',
+      })
+    end
   }
 }
 
