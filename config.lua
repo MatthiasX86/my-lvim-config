@@ -60,6 +60,7 @@ lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
+lvim.lsp.automatic_servers_installation = false
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -244,7 +245,19 @@ lvim.plugins = {
   },
 
   {
-    "mattn/emmet-vim"
+    "mattn/emmet-vim",
+    config = function()
+      local lspconfig = require('lspconfig')
+      local configs = require('lspconfig/configs')
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+      lspconfig.emmet_ls.setup({
+        -- on_attach = on_attach,
+        capabilities = capabilities,
+        filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less' },
+      })
+    end
   },
 
   {
@@ -980,7 +993,28 @@ lvim.plugins = {
         close_all_results = '<Bslash>pc',
       })
     end
-  }
+  },
+
+  {
+    'tzachar/cmp-tabnine',
+    config = function()
+      local tabnine = require('cmp_tabnine.config')
+      tabnine:setup({
+        max_lines = 1000;
+        max_num_results = 20;
+        sort = true;
+        run_on_every_keystroke = true;
+        snippet_placeholder = '..';
+        ignored_file_types = { -- default is not to ignore
+          -- uncomment to ignore in lua:
+          -- lua = true
+        };
+        show_prediction_strength = false;
+      })
+    end,
+    run = './install.sh',
+    requires = 'hrsh7th/nvim-cmp'
+  },
 }
 
 -- this isn't working...
@@ -988,6 +1022,7 @@ lvim.plugins = {
 
 require 'lspconfig'.tailwindcss.setup {}
 require 'lspconfig'.cssmodules_ls.setup {}
+require 'lspconfig'.solang.setup {}
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
