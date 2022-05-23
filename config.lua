@@ -60,6 +60,7 @@ lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
+lvim.builtin.treesitter.rainbow.enable = true
 lvim.lsp.automatic_servers_installation = false
 
 -- if you don't want all the parsers change this to a table of the ones you want
@@ -631,9 +632,7 @@ lvim.plugins = {
         -- same directory name)
         include_only_installed_plugins = true,
       })
-      vim.api.nvim_set_keymap("n", "<Bslash>h", ":Cheatsheet<Enter>",
-        { silent = true, noremap = true }
-      )
+      -- vim.api.nvim_set_keymap("n", "<Bslash>h", ":Cheatsheet<Enter>", { silent = true, noremap = true })
     end
   },
 
@@ -1014,6 +1013,35 @@ lvim.plugins = {
     end,
     run = './install.sh',
     requires = 'hrsh7th/nvim-cmp'
+  },
+
+  {
+    'tpope/vim-fugitive',
+  },
+
+  {
+    'junegunn/gv.vim',
+    requires = 'tpope/vim-fugitive',
+    config = function()
+      vim.api.nvim_set_keymap("n", "<Bslash>gl", ":GV<Enter>", { noremap = true, silent = true })
+    end
+  },
+
+  {
+    'Pocco81/HighStr.nvim',
+    config = function()
+      vim.api.nvim_set_keymap("v", "<Bslash>h1", ":<c-u>HSHighlight 1<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<Bslash>h2", ":<c-u>HSHighlight 2<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<Bslash>h3", ":<c-u>HSHighlight 3<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<Bslash>h4", ":<c-u>HSHighlight 4<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<Bslash>h5", ":<c-u>HSHighlight 5<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<Bslash>h6", ":<c-u>HSHighlight 6<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<Bslash>h7", ":<c-u>HSHighlight 7<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<Bslash>h8", ":<c-u>HSHighlight 8<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<Bslash>h9", ":<c-u>HSHighlight 9<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>hrr", ":HSRmHighlight<Enter>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>hra", ":HSRmHighlight rm_all<Enter>", { noremap = true, silent = true })
+    end
   },
 }
 
