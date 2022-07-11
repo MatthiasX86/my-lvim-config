@@ -59,7 +59,7 @@ lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.show_icons.git = 0
+-- lvim.builtin.nvimtree.show_icons.git = 0
 lvim.builtin.treesitter.rainbow.enable = true
 lvim.lsp.automatic_servers_installation = false
 
@@ -105,39 +105,43 @@ lvim.builtin.treesitter.highlight.enabled = true
 --   buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 -- end
 
--- -- set a formatter, this will override the language server formatting capabilities (if it exists)
--- local formatters = require "lvim.lsp.null-ls.formatters"
--- formatters.setup {
---   { command = "black", filetypes = { "python" } },
---   { command = "isort", filetypes = { "python" } },
---   {
---     -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
---     command = "prettier",
---     ---@usage arguments to pass to the formatter
---     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
---     extra_args = { "--print-with", "100" },
---     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
---     filetypes = { "typescript", "typescriptreact" },
---   },
--- }
+-- set a formatter, this will override the language server formatting capabilities (if it exists)
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  { command = "black", filetypes = { "python" } },
+  { command = "isort", filetypes = { "python" } },
+  {
+    -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
+    command = "prettier",
+    ---@usage arguments to pass to the formatter
+    -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
+    extra_args = { "--print-with", "100" },
+    ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+    filetypes = { "typescript", "typescriptreact" },
+  },
+}
 
--- -- set additional linters
--- local linters = require "lvim.lsp.null-ls.linters"
--- linters.setup {
---   { command = "flake8", filetypes = { "python" } },
---   {
---     -- each linter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
---     command = "shellcheck",
---     ---@usage arguments to pass to the formatter
---     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
---     extra_args = { "--severity", "warning" },
---   },
---   {
---     command = "codespell",
---     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
---     filetypes = { "javascript", "python" },
---   },
--- }
+-- set additional linters
+local linters = require "lvim.lsp.null-ls.linters"
+linters.setup {
+  { command = "flake8", filetypes = { "python" } },
+  {
+    -- each linter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
+    command = "shellcheck",
+    ---@usage arguments to pass to the formatter
+    -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
+    extra_args = { "--severity", "warning" },
+  },
+  {
+    command = "codespell",
+    ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+    filetypes = { "javascript", "python" },
+  },
+  {
+    command = "eslint",
+    filetypes = { "typescript", "typescriptreact" }
+  }
+}
 
 -- Additional Plugins
 lvim.plugins = {
@@ -754,7 +758,8 @@ lvim.plugins = {
     config = function()
       require('vgit').setup()
       vim.api.nvim_set_keymap("n", "<Bslash>gbd", ":VGit buffer_diff_preview<Enter>", { noremap = true, silent = true })
-      vim.api.nvim_set_keymap("n", "<Bslash>gbh", ":VGit buffer_history_preview<Enter>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Bslash>gbh", ":VGit buffer_history_preview<Enter>",
+        { noremap = true, silent = true })
       vim.api.nvim_set_keymap("n", "<Bslash>gbp", ":VGit buffer_blame_preview<Enter>", { noremap = true, silent = true })
     end,
     requires = { 'nvim-lua/plenary.nvim' }
@@ -1015,9 +1020,9 @@ lvim.plugins = {
     requires = 'hrsh7th/nvim-cmp'
   },
 
-  {
-    'tpope/vim-fugitive',
-  },
+  -- {
+  --   'tpope/vim-fugitive',
+  -- },
 
   {
     'junegunn/gv.vim',
@@ -1043,6 +1048,13 @@ lvim.plugins = {
       vim.api.nvim_set_keymap("n", "<Bslash>hra", ":HSRmHighlight rm_all<Enter>", { noremap = true, silent = true })
     end
   },
+
+  {
+    "glacambre/firenvim",
+    run = function()
+      vim.fn['firenvim#install'](0)
+    end
+  }
 }
 
 -- this isn't working...
