@@ -11,8 +11,10 @@ an executable
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
-lvim.colorscheme = "onedarker"
+lvim.colorscheme = "catppuccin"
 
+vim.g.catppuccin_flavour = "mocha"
+vim.cmd [[colorscheme catppuccin]]
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
 -- add your own keymapping
@@ -115,7 +117,7 @@ formatters.setup {
     command = "prettier",
     ---@usage arguments to pass to the formatter
     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
-    extra_args = { "--print-with", "100" },
+    -- extra_args = { "--print-with", "100" },
     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
     filetypes = { "typescript", "typescriptreact" },
   },
@@ -145,9 +147,174 @@ linters.setup {
 
 -- Additional Plugins
 lvim.plugins = {
-  { "folke/tokyonight.nvim" }, {
+  {
+    "folke/tokyonight.nvim",
+    config = function()
+      vim.g.tokyonight_style = "day"
+      vim.g.tokyonight_italic_functions = true
+      vim.g.tokyonight_sidebars = { "qf", "vista_kind", "terminal", "packer" }
+
+      require('lualine').setup {
+        options = {
+          theme = 'tokyonight'
+        }
+      }
+    end
+  },
+
+  {
+    "catppuccin/nvim",
+    as = "catppuccin",
+    config = function()
+
+      vim.g.catppuccin_flavour = "mocha"
+
+      require("catppuccin").setup({
+        dim_inactive = {
+          enabled = false,
+          shade = "dark",
+          percentage = 0.15,
+        },
+        transparent_background = false,
+        term_colors = false,
+        compile = {
+          enabled = false,
+          path = vim.fn.stdpath "cache" .. "/catppuccin",
+        },
+        styles = {
+          comments = { "italic" },
+          conditionals = { "italic" },
+          loops = {},
+          functions = {},
+          keywords = {},
+          strings = {},
+          variables = {},
+          numbers = {},
+          booleans = {},
+          properties = {},
+          types = {},
+          operators = {},
+        },
+        integrations = {
+          treesitter = true,
+          native_lsp = {
+            enabled = true,
+            virtual_text = {
+              errors = { "italic" },
+              hints = { "italic" },
+              warnings = { "italic" },
+              information = { "italic" },
+            },
+            underlines = {
+              errors = { "underline" },
+              hints = { "underline" },
+              warnings = { "underline" },
+              information = { "underline" },
+            },
+          },
+          coc_nvim = false,
+          lsp_trouble = false,
+          cmp = true,
+          lsp_saga = false,
+          gitgutter = false,
+          gitsigns = true,
+          leap = false,
+          telescope = true,
+          nvimtree = {
+            enabled = true,
+            show_root = true,
+            transparent_panel = false,
+          },
+          neotree = {
+            enabled = false,
+            show_root = true,
+            transparent_panel = false,
+          },
+          dap = {
+            enabled = false,
+            enable_ui = false,
+          },
+          which_key = false,
+          indent_blankline = {
+            enabled = true,
+            colored_indent_levels = false,
+          },
+          dashboard = true,
+          neogit = false,
+          vim_sneak = false,
+          fern = false,
+          barbar = false,
+          bufferline = true,
+          markdown = true,
+          lightspeed = false,
+          ts_rainbow = false,
+          hop = false,
+          notify = true,
+          telekasten = true,
+          symbols_outline = true,
+          mini = false,
+          aerial = false,
+          vimwiki = true,
+          beacon = true,
+          navic = false,
+          overseer = false,
+        },
+        color_overrides = {},
+        highlight_overrides = {},
+      })
+
+      vim.cmd [[colorscheme catppuccin]]
+    end
+  },
+
+  {
+    "EdenEast/nightfox.nvim",
+    config = function()
+      -- Default options
+      require('nightfox').setup({
+        options = {
+          -- Compiled file's destination location
+          compile_path = vim.fn.stdpath("cache") .. "/nightfox",
+          compile_file_suffix = "_compiled", -- Compiled file suffix
+          transparent = false, -- Disable setting background
+          terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
+          dim_inactive = false, -- Non focused panes set to alternative background
+          -- styles = { -- Style to be applied to different syntax groups
+          --   comments = "NONE", -- Value is any valid attr-list value `:help attr-list`
+          --   conditionals = "NONE",
+          --   constants = "NONE",
+          --   functions = "NONE",
+          --   keywords = "NONE",
+          --   numbers = "NONE",
+          --   operators = "NONE",
+          --   strings = "NONE",
+          --   types = "NONE",
+          --   variables = "NONE",
+          -- },
+          inverse = { -- Inverse highlight for different types
+            match_paren = false,
+            visual = false,
+            search = false,
+          },
+          modules = { -- List of various plugins and additional options
+            -- ...
+          },
+        },
+        palettes = {},
+        specs = {},
+        groups = {},
+      })
+
+      -- setup must be called before loading
+      vim.cmd("colorscheme duskfox")
+    end
+  },
+
+  {
     "ray-x/lsp_signature.nvim",
-    config = function() require "lsp_signature".on_attach() end,
+    config = function()
+      require "lsp_signature".on_attach()
+    end,
     event = { "InsertEnter" }
   },
 
@@ -565,13 +732,6 @@ lvim.plugins = {
   -- {
   --   "savq/melange",
   -- },
-
-  {
-    "EdenEast/nightfox.nvim",
-    config = function()
-      require('lualine').setup()
-    end
-  },
 
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -1054,7 +1214,58 @@ lvim.plugins = {
     run = function()
       vim.fn['firenvim#install'](0)
     end
+  },
+
+  {
+    "haringsrob/nvim_context_vt",
+    config = function()
+      require('nvim_context_vt').setup({
+        -- Enable by default. You can disable and use :NvimContextVtToggle to maually enable.
+        -- Default: true
+        enabled = true,
+
+        -- Override default virtual text prefix
+        -- Default: '-->'
+        prefix = '',
+
+        -- Override the internal highlight group name
+        -- Default: 'ContextVt'
+        highlight = 'CustomContextVt',
+
+        -- Disable virtual text for given filetypes
+        -- Default: { 'markdown' }
+        disable_ft = { 'markdown' },
+
+        -- Disable display of virtual text below blocks for indentation based languages like Python
+        -- Default: false
+        disable_virtual_lines = false,
+
+        -- Same as above but only for spesific filetypes
+        -- Default: {}
+        disable_virtual_lines_ft = { 'yaml' },
+
+        -- How many lines required after starting position to show virtual text
+        -- Default: 1 (equals two lines total)
+        min_rows = 1,
+
+        -- Same as above but only for spesific filetypes
+        -- Default: {}
+        min_rows_ft = {},
+      })
+    end
+  },
+
+  {
+    'bennypowers/nvim-regexplainer',
+    config = function()
+      require 'regexplainer'.setup()
+    end,
+    requires = {
+      'nvim-treesitter/nvim-treesitter',
+      'MunifTanjim/nui.nvim',
+    }
   }
+
 }
 
 -- this isn't working...
