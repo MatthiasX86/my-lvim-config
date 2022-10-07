@@ -14,7 +14,7 @@ lvim.format_on_save = true
 lvim.colorscheme = "catppuccin"
 
 vim.g.catppuccin_flavour = "mocha"
-vim.cmd [[colorscheme catppuccin]]
+-- vim.cmd [[colorscheme catppuccin]]
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
 -- add your own keymapping
