@@ -323,6 +323,7 @@ lvim.plugins = {
     event = "BufRead",
     config = function()
       require("hop").setup()
+
       vim.api.nvim_set_keymap("n", "s", ":HopChar2<cr>", { silent = true })
       vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
     end
@@ -572,6 +573,7 @@ lvim.plugins = {
     event = "BufRead",
     cmd = "SymbolsOutline",
     config = function()
+      require("symbols-outline").setup {}
       vim.api.nvim_set_keymap("n", "<Bslash>o", ":SymbolsOutline<Enter>", { noremap = true, silent = true })
     end
   },
@@ -1274,7 +1276,6 @@ lvim.plugins = {
 require 'lspconfig'.tailwindcss.setup {}
 require 'lspconfig'.cssmodules_ls.setup {}
 require 'lspconfig'.solang.setup {}
-
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
