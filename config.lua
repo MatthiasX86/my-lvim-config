@@ -58,7 +58,7 @@ lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
-lvim.builtin.notify.active = true
+-- lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 -- lvim.builtin.nvimtree.show_icons.git = 0
@@ -84,7 +84,7 @@ lvim.builtin.treesitter.ensure_installed = {
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
 
--- generic LSP settings
+vim.api.nvim_set_keymap("i", "jk", "<ESC>", { noremap = true, silent = true })
 
 -- ---@usage disable automatic installation of servers
 -- lvim.lsp.automatic_servers_installation = false
@@ -1266,7 +1266,11 @@ lvim.plugins = {
       'nvim-treesitter/nvim-treesitter',
       'MunifTanjim/nui.nvim',
     }
-  }
+  },
+
+  { 'tikhomirov/vim-glsl' },
+
+  { 'timtro/glslView-nvim', ft = 'glsl' }
 
 }
 
@@ -1276,7 +1280,9 @@ lvim.plugins = {
 require 'lspconfig'.tailwindcss.setup {}
 require 'lspconfig'.cssmodules_ls.setup {}
 require 'lspconfig'.solang.setup {}
+
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
+
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
 -- }
