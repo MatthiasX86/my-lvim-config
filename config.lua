@@ -63,7 +63,8 @@ lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 -- lvim.builtin.nvimtree.show_icons.git = 0
 lvim.builtin.treesitter.rainbow.enable = true
-lvim.lsp.automatic_servers_installation = false
+
+lvim.lsp.installer.setup.automatic_installation = false
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -166,7 +167,6 @@ lvim.plugins = {
     "catppuccin/nvim",
     as = "catppuccin",
     config = function()
-
       vim.g.catppuccin_flavour = "mocha"
 
       require("catppuccin").setup({
@@ -276,9 +276,9 @@ lvim.plugins = {
           -- Compiled file's destination location
           compile_path = vim.fn.stdpath("cache") .. "/nightfox",
           compile_file_suffix = "_compiled", -- Compiled file suffix
-          transparent = false, -- Disable setting background
-          terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
-          dim_inactive = false, -- Non focused panes set to alternative background
+          transparent = false,               -- Disable setting background
+          terminal_colors = true,            -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
+          dim_inactive = false,              -- Non focused panes set to alternative background
           -- styles = { -- Style to be applied to different syntax groups
           --   comments = "NONE", -- Value is any valid attr-list value `:help attr-list`
           --   conditionals = "NONE",
@@ -291,7 +291,8 @@ lvim.plugins = {
           --   types = "NONE",
           --   variables = "NONE",
           -- },
-          inverse = { -- Inverse highlight for different types
+          inverse = {
+            -- Inverse highlight for different types
             match_paren = false,
             visual = false,
             search = false,
@@ -372,52 +373,6 @@ lvim.plugins = {
   },
 
   {
-    "sindrets/diffview.nvim",
-    event = "BufRead",
-    config = function()
-      local cb = require 'diffview.config'.diffview_callback
-
-      require('diffview').setup {
-        diff_binaries = false, -- Show diffs for binaries
-        file_panel = {
-          width = 35,
-          use_icons = true -- Requires nvim-web-devicons
-        },
-        key_bindings = {
-          disable_defaults = false, -- Disable the default key bindings
-          -- The `view` bindings are active in the diff buffers, only when the current
-          -- tabpage is a Diffview.
-          view = {
-            ["<tab>"]     = cb("select_next_entry"), -- Open the diff for the next file
-            ["<s-tab>"]   = cb("select_prev_entry"), -- Open the diff for the previous file
-            ["<leader>e"] = cb("focus_files"), -- Bring focus to the files panel
-            ["<leader>b"] = cb("toggle_files"), -- Toggle the files panel.
-          },
-          file_panel = {
-            ["j"]             = cb("next_entry"), -- Bring the cursor to the next file entry
-            ["<down>"]        = cb("next_entry"),
-            ["k"]             = cb("prev_entry"), -- Bring the cursor to the previous file entry.
-            ["<up>"]          = cb("prev_entry"),
-            ["<cr>"]          = cb("select_entry"), -- Open the diff for the selected entry.
-            ["o"]             = cb("select_entry"),
-            ["<2-LeftMouse>"] = cb("select_entry"),
-            ["-"]             = cb("toggle_stage_entry"), -- Stage / unstage the selected entry.
-            ["S"]             = cb("stage_all"), -- Stage all entries.
-            ["U"]             = cb("unstage_all"), -- Unstage all entries.
-            ["X"]             = cb("restore_entry"), -- Restore entry to the state on the left side.
-            ["R"]             = cb("refresh_files"), -- Update stats and entries in the file list.
-            ["<tab>"]         = cb("select_next_entry"),
-            ["<s-tab>"]       = cb("select_prev_entry"),
-            ["<leader>e"]     = cb("focus_files"),
-            ["<leader>b"]     = cb("toggle_files"),
-          }
-        }
-      }
-      vim.api.nvim_set_keymap("n", "<Bslash>d", ":DiffviewOpen<Enter>", { noremap = true, silent = true })
-    end
-  },
-
-  {
     "mattn/emmet-vim",
     config = function()
       local lspconfig = require('lspconfig')
@@ -489,12 +444,12 @@ lvim.plugins = {
     "rmagatti/goto-preview",
     config = function()
       require('goto-preview').setup {
-        width = 120; -- Width of the floating window
-        height = 25; -- Height of the floating window
-        default_mappings = true; -- Bind default mappings
-        debug = true; -- Print debug information
-        opacity = nil; -- 0-100 opacity level of the floating window where 100 is fully transparent.
-        post_open_hook = nil -- A function taking two arguments, a buffer and a window to be ran as a hook.
+        width = 120,             -- Width of the floating window
+        height = 25,             -- Height of the floating window
+        default_mappings = true, -- Bind default mappings
+        debug = true,            -- Print debug information
+        opacity = nil,           -- 0-100 opacity level of the floating window where 100 is fully transparent.
+        post_open_hook = nil     -- A function taking two arguments, a buffer and a window to be ran as a hook.
         -- You can use "default_mappings = true" setup option
         -- Or explicitly set keybindings
         -- vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>")
@@ -508,31 +463,31 @@ lvim.plugins = {
     "norcalli/nvim-colorizer.lua",
     config = function()
       require("colorizer").setup({ "*" }, {
-        RGB = true, -- #RGB hex codes
-        RRGGBB = true, -- #RRGGBB hex codes
+        RGB = true,      -- #RGB hex codes
+        RRGGBB = true,   -- #RRGGBB hex codes
         RRGGBBAA = true, -- #RRGGBBAA hex codes
-        rgb_fn = true, -- CSS rgb() and rgba() functions
-        hsl_fn = true, -- CSS hsl() and hsla() functions
-        css = true, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-        css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+        rgb_fn = true,   -- CSS rgb() and rgba() functions
+        hsl_fn = true,   -- CSS hsl() and hsla() functions
+        css = true,      -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+        css_fn = true,   -- Enable all CSS *functions*: rgb_fn, hsl_fn
       })
     end,
   },
 
-  {
-    "andymass/vim-matchup",
-    event = "CursorMoved",
-    config = function()
-      vim.g.matchup_matchparen_offscreen = { method = "popup" }
-    end,
-  },
+  -- {
+  -- "andymass/vim-matchup",
+  -- event = "cursormoved",
+  -- config = function()
+  -- vim.g.matchup_matchparen_offscreen = { method = "popup" }
+  -- end,
+  -- },
 
   {
     "nacro90/numb.nvim",
     event = "BufRead",
     config = function()
       require("numb").setup {
-        show_numbers = true, -- Enable 'number' for the window while peeking
+        show_numbers = true,    -- Enable 'number' for the window while peeking
         show_cursorline = true, -- Enable 'cursorline' for the window while peeking
       }
     end,
@@ -611,20 +566,23 @@ lvim.plugins = {
         -- All these keys will be mapped to their corresponding default scrolling animation
         mappings = { '<C-u>', '<C-d>', '<C-b>', '<C-f>',
           '<C-y>', '<C-e>', 'zt', 'zz', 'zb' },
-        hide_cursor = true, -- Hide cursor while scrolling
-        stop_eof = true, -- Stop at <EOF> when scrolling downwards
+        hide_cursor = true,          -- Hide cursor while scrolling
+        stop_eof = true,             -- Stop at <EOF> when scrolling downwards
         use_local_scrolloff = false, -- Use the local scope of scrolloff instead of the global scope
-        respect_scrolloff = false, -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+        respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
         cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
-        easing_function = nil, -- Default easing function
-        pre_hook = nil, -- Function to run before the scrolling animation starts
-        post_hook = nil, -- Function to run after the scrolling animation ends
+        easing_function = nil,       -- Default easing function
+        pre_hook = nil,              -- Function to run before the scrolling animation starts
+        post_hook = nil,             -- Function to run after the scrolling animation ends
       })
     end
   },
 
   {
     "Xuyuanp/scrollbar.nvim",
+    config = function()
+      require("scrollbar").setup()
+    end
   },
 
   {
@@ -680,7 +638,7 @@ lvim.plugins = {
           -- * a percentage of the width / height of the editor when <= 1
           -- * a function that returns the width or the height
           width = 120, -- width of the Zen window
-          height = 1, -- height of the Zen window
+          height = 1,  -- height of the Zen window
           -- by default, no options are changed for the Zen window
           -- uncomment any of the options below, or add other vim.wo options you want to apply
           options = {
@@ -698,12 +656,12 @@ lvim.plugins = {
           -- comment the lines to not apply the options
           options = {
             enabled = true,
-            ruler = false, -- disables the ruler text in the cmd line area
-            showcmd = false, -- disables the command in the last line of the screen
+            ruler = false,               -- disables the ruler text in the cmd line area
+            showcmd = false,             -- disables the command in the last line of the screen
           },
           twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
           gitsigns = { enabled = true }, -- disables git signs
-          tmux = { enabled = false }, -- disables the tmux statusline
+          tmux = { enabled = false },    -- disables the tmux statusline
           -- this will change the font size on kitty when in zen mode
           -- to make this work, you need to set the following kitty options:
           -- - allow_remote_control socket-only
@@ -862,10 +820,11 @@ lvim.plugins = {
     "romgrk/nvim-treesitter-context",
     config = function()
       require 'treesitter-context'.setup {
-        enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+        enable = true,   -- Enable this plugin (Can be enabled/disabled later via commands)
         throttle = true, -- Throttles plugin updates (may improve performance)
-        max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-        patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+        max_lines = 0,   -- How many lines the window should span. Values <= 0 mean no limit.
+        patterns = {
+          -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
           -- For all filetypes
           -- Note that setting an entry here replaces all other patterns for this entry.
           -- By setting the 'default' entry below, you can control which nodes you want to
@@ -904,8 +863,8 @@ lvim.plugins = {
         min_jump         = 30,
         popup            = {
           delay_ms = 0, -- delay before popup displays
-          inc_ms = 10, -- time increments used for fade/resize effects
-          blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
+          inc_ms = 10,  -- time increments used for fade/resize effects
+          blend = 10,   -- starting blend, between 0-100 (fully transparent), see :h winblend
           width = 10,
           winhl = "pulse_fader",
           fader = require('specs').linear_fader,
@@ -1090,7 +1049,10 @@ lvim.plugins = {
   },
 
   {
-    'kevinhwang91/nvim-hlslens'
+    'kevinhwang91/nvim-hlslens',
+    config = function()
+      require("hlslens").setup()
+    end,
   },
 
   {
@@ -1158,7 +1120,6 @@ lvim.plugins = {
         execute_line      = '<Bslash>pl',
         execute_selection = '<Bslash>ps',
         execute_paragraph = '<Bslash>pp',
-
         -- close_latest_result = '<Bslash>p',
         close_all_results = '<Bslash>pc',
       })
@@ -1170,16 +1131,16 @@ lvim.plugins = {
     config = function()
       local tabnine = require('cmp_tabnine.config')
       tabnine:setup({
-        max_lines = 1000;
-        max_num_results = 20;
-        sort = true;
-        run_on_every_keystroke = true;
-        snippet_placeholder = '..';
+        max_lines = 1000,
+        max_num_results = 20,
+        sort = true,
+        run_on_every_keystroke = true,
+        snippet_placeholder = '..',
         ignored_file_types = { -- default is not to ignore
           -- uncomment to ignore in lua:
           -- lua = true
-        };
-        show_prediction_strength = false;
+        },
+        show_prediction_strength = false,
       })
     end,
     run = './install.sh',
@@ -1229,31 +1190,24 @@ lvim.plugins = {
         -- Enable by default. You can disable and use :NvimContextVtToggle to maually enable.
         -- Default: true
         enabled = true,
-
         -- Override default virtual text prefix
         -- Default: '-->'
         prefix = '',
-
         -- Override the internal highlight group name
         -- Default: 'ContextVt'
         highlight = 'CustomContextVt',
-
         -- Disable virtual text for given filetypes
         -- Default: { 'markdown' }
         disable_ft = { 'markdown' },
-
         -- Disable display of virtual text below blocks for indentation based languages like Python
         -- Default: false
         disable_virtual_lines = false,
-
         -- Same as above but only for spesific filetypes
         -- Default: {}
         disable_virtual_lines_ft = { 'yaml' },
-
         -- How many lines required after starting position to show virtual text
         -- Default: 1 (equals two lines total)
         min_rows = 1,
-
         -- Same as above but only for spesific filetypes
         -- Default: {}
         min_rows_ft = {},
@@ -1281,6 +1235,9 @@ lvim.plugins = {
     config = function()
       require("noice").setup({
         lsp = {
+          hover = {
+            enabled = false
+          },
           signature = {
             enable = true
           }
@@ -1311,59 +1268,46 @@ lvim.plugins = {
     'simrat39/rust-tools.nvim',
     config = function()
       local opts = {
-        tools = { -- rust-tools options
+        tools = {
+          -- rust-tools options
 
           -- how to execute terminal commands
           -- options right now: termopen / quickfix
           executor = require("rust-tools.executors").termopen,
-
           -- callback to execute once rust-analyzer is done initializing the workspace
           -- The callback receives one parameter indicating the `health` of the server: "ok" | "warning" | "error"
           on_initialized = nil,
-
           -- automatically call RustReloadWorkspace when writing to a Cargo.toml file.
           reload_workspace_from_cargo_toml = true,
-
           -- These apply to the default RustSetInlayHints command
           inlay_hints = {
             -- automatically set inlay hints (type hints)
             -- default: true
             auto = true,
-
             -- Only show inlay hints for the current line
             only_current_line = false,
-
             -- whether to show parameter hints with the inlay hints or not
             -- default: true
             show_parameter_hints = true,
-
             -- prefix for parameter hints
             -- default: "<-"
             parameter_hints_prefix = "<- ",
-
             -- prefix for all the other hints (type, chaining)
             -- default: "=>"
             other_hints_prefix = "=> ",
-
             -- whether to align to the length of the longest line in the file
             max_len_align = false,
-
             -- padding from the left if max_len_align is true
             max_len_align_padding = 1,
-
             -- whether to align to the extreme right or not
             right_align = false,
-
             -- padding from the right if right_align is true
             right_align_padding = 7,
-
             -- The color of the hints
             highlight = "Comment",
           },
-
           -- options same as lsp hover / vim.lsp.util.open_floating_preview()
           hover_actions = {
-
             -- the border that is used for the hover window
             -- see vim.api.nvim_open_win()
             border = {
@@ -1376,18 +1320,14 @@ lvim.plugins = {
               { "╰", "FloatBorder" },
               { "│", "FloatBorder" },
             },
-
             -- Maximal width of the hover window. Nil means no max.
             max_width = nil,
-
             -- Maximal height of the hover window. Nil means no max.
             max_height = nil,
-
             -- whether the hover action window gets automatically focused
             -- default: false
             auto_focus = false,
           },
-
           -- settings for showing the crate graph based on graphviz and the dot
           -- command
           crate_graph = {
@@ -1403,7 +1343,6 @@ lvim.plugins = {
             -- crates
             -- default: true
             full = true,
-
             -- List of backends found on: https://graphviz.org/docs/outputs/
             -- Is used for input validation and autocompletion
             -- Last updated: 2021-08-26
@@ -1465,7 +1404,6 @@ lvim.plugins = {
             },
           },
         },
-
         -- all the opts to send to nvim-lspconfig
         -- these override the defaults set by rust-tools.nvim
         -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
@@ -1474,7 +1412,6 @@ lvim.plugins = {
           -- setting it to false may improve startup time
           standalone = true,
         }, -- rust-analyzer options
-
         -- debugging stuff
         dap = {
           adapter = {
@@ -1520,8 +1457,174 @@ lvim.plugins = {
       vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
       vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
     end
-  }
+  },
 
+  {
+    "Bryley/neoai.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    cmd = {
+      "NeoAI",
+      "NeoAIOpen",
+      "NeoAIClose",
+      "NeoAIToggle",
+      "NeoAIContext",
+      "NeoAIContextOpen",
+      "NeoAIContextClose",
+      "NeoAIInject",
+      "NeoAIInjectCode",
+      "NeoAIInjectContext",
+      "NeoAIInjectContextCode",
+    },
+    keys = {
+      { "<leader>as", desc = "summarize text" },
+      { "<leader>ag", desc = "generate git message" },
+    },
+    config = function()
+      require("neoai").setup({
+        -- Options go here
+      })
+    end,
+  },
+
+  {
+    "sindrets/diffview.nvim",
+    event = "BufRead",
+    config = function()
+      local cb = require 'diffview.config'.diffview_callback
+
+      require('diffview').setup {
+        diff_binaries = false, -- Show diffs for binaries
+        file_panel = {
+          width = 35,
+          use_icons = true -- Requires nvim-web-devicons
+        },
+        key_bindings = {
+          disable_defaults = false, -- Disable the default key bindings
+          -- The `view` bindings are active in the diff buffers, only when the current
+          -- tabpage is a Diffview.
+          view = {
+            ["<tab>"]     = cb("select_next_entry"), -- Open the diff for the next file
+            ["<s-tab>"]   = cb("select_prev_entry"), -- Open the diff for the previous file
+            ["<leader>e"] = cb("focus_files"),       -- Bring focus to the files panel
+            ["<leader>b"] = cb("toggle_files"),      -- Toggle the files panel.
+          },
+          file_panel = {
+            ["j"]             = cb("next_entry"),   -- Bring the cursor to the next file entry
+            ["<down>"]        = cb("next_entry"),
+            ["k"]             = cb("prev_entry"),   -- Bring the cursor to the previous file entry.
+            ["<up>"]          = cb("prev_entry"),
+            ["<cr>"]          = cb("select_entry"), -- Open the diff for the selected entry.
+            ["o"]             = cb("select_entry"),
+            ["<2-LeftMouse>"] = cb("select_entry"),
+            ["-"]             = cb("toggle_stage_entry"), -- Stage / unstage the selected entry.
+            ["S"]             = cb("stage_all"),          -- Stage all entries.
+            ["U"]             = cb("unstage_all"),        -- Unstage all entries.
+            ["X"]             = cb("restore_entry"),      -- Restore entry to the state on the left side.
+            ["R"]             = cb("refresh_files"),      -- Update stats and entries in the file list.
+            ["<tab>"]         = cb("select_next_entry"),
+            ["<s-tab>"]       = cb("select_prev_entry"),
+            ["<leader>e"]     = cb("focus_files"),
+            ["<leader>b"]     = cb("toggle_files"),
+          }
+        }
+      }
+      vim.api.nvim_set_keymap("n", "<Bslash>gD", ":DiffviewOpen<Enter>", { noremap = true, silent = true })
+    end
+  },
+
+  {
+    "dnlhc/glance.nvim",
+    config = function()
+      local glance = require('glance')
+      local actions = glance.actions
+
+      glance.setup({
+        height = 18, -- Height of the window
+        zindex = 45,
+
+        -- By default glance will open preview "embedded" within your active window
+        -- when `detached` is enabled, glance will render above all existing windows
+        -- and won't be restiricted by the width of your active window
+        detached = true,
+
+        -- Or use a function to enable `detached` only when the active window is too small
+        -- (default behavior)
+        -- detached = function(winid)
+        --   return vim.api.nvim_win_get_width(winid) < 100
+        -- end,
+
+        preview_win_opts = { -- Configure preview window options
+          cursorline = true,
+          number = true,
+          wrap = true,
+        },
+        border = {
+          enable = false, -- Show window borders. Only horizontal borders allowed
+          top_char = '―',
+          bottom_char = '―',
+        },
+        list = {
+          position = 'right', -- Position of the list window 'left'|'right'
+          width = 0.33,       -- 33% width relative to the active window, min 0.1, max 0.5
+        },
+        theme = {             -- This feature might not work properly in nvim-0.7.2
+          enable = true,      -- Will generate colors for the plugin based on your current colorscheme
+          mode = 'auto',      -- 'brighten'|'darken'|'auto', 'auto' will set mode based on the brightness of your colorscheme
+        },
+        mappings = {
+          list = {
+            ['j'] = actions.next,     -- Bring the cursor to the next item in the list
+            ['k'] = actions.previous, -- Bring the cursor to the previous item in the list
+            ['<Down>'] = actions.next,
+            ['<Up>'] = actions.previous,
+            ['<Tab>'] = actions.next_location,       -- Bring the cursor to the next location skipping groups in the list
+            ['<S-Tab>'] = actions.previous_location, -- Bring the cursor to the previous location skipping groups in the list
+            ['<C-u>'] = actions.preview_scroll_win(5),
+            ['<C-d>'] = actions.preview_scroll_win(-5),
+            ['v'] = actions.jump_vsplit,
+            ['s'] = actions.jump_split,
+            ['t'] = actions.jump_tab,
+            ['<CR>'] = actions.jump,
+            ['o'] = actions.jump,
+            ['l'] = actions.open_fold,
+            ['h'] = actions.close_fold,
+            ['<leader>l'] = actions.enter_win('preview'), -- Focus preview window
+            ['q'] = actions.close,
+            ['Q'] = actions.close,
+            ['<Esc>'] = actions.close,
+            ['<C-q>'] = actions.quickfix,
+            -- ['<Esc>'] = false -- disable a mapping
+          },
+          preview = {
+            ['Q'] = actions.close,
+            ['<Tab>'] = actions.next_location,
+            ['<S-Tab>'] = actions.previous_location,
+            ['<leader>l'] = actions.enter_win('list'), -- Focus list window
+          },
+        },
+        hooks = {},
+        folds = {
+          fold_closed = '',
+          fold_open = '',
+          folded = true, -- Automatically fold list on startup
+        },
+        indent_lines = {
+          enable = true,
+          icon = '│',
+        },
+        winbar = {
+          enable = true, -- Available strating from nvim-0.8+
+        },
+      })
+      -- Lua
+      vim.api.nvim_set_keymap("n", "gGd", "<CMD>Glance definitions<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "gGr", "<CMD>Glance references<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "gGy", "<CMD>Glance type_definitions<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "gGm", "<CMD>Glance implementations<CR>", { noremap = true, silent = true })
+    end,
+  }
 }
 
 -- this isn't working...
