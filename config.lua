@@ -600,8 +600,8 @@ lvim.plugins = {
     },
     config = function()
       require('nvim-comment-frame').setup({
-        keymap = '<Bslash>c',
-        multiline_keymap = '<Bslash>C',
+        keymap = '<Bslash>dc',
+        multiline_keymap = '<Bslash>dC',
         languages = {
           -- configuration for Lua programming language
           -- @NOTE global configuration will be overridden by language level
@@ -1623,6 +1623,41 @@ lvim.plugins = {
       vim.api.nvim_set_keymap("n", "gGr", "<CMD>Glance references<CR>", { noremap = true, silent = true })
       vim.api.nvim_set_keymap("n", "gGy", "<CMD>Glance type_definitions<CR>", { noremap = true, silent = true })
       vim.api.nvim_set_keymap("n", "gGm", "<CMD>Glance implementations<CR>", { noremap = true, silent = true })
+    end,
+  },
+
+  {
+    "CRAG666/code_runner.nvim",
+    config = function()
+      require('code_runner').setup({
+        filetype = {
+          python = "python3 -u",
+          typescript = "deno run",
+          rust = {
+            "cd $dir &&",
+            "rustc $fileName &&",
+            "$dir/$fileNameWithoutExt"
+          },
+        },
+      })
+
+      vim.api.nvim_set_keymap('n', '<Bslash>rc', ':RunCode<CR>', { noremap = true, silent = false })
+      vim.api.nvim_set_keymap('n', '<Bslash>rf', ':RunFile<CR>', { noremap = true, silent = false })
+      vim.api.nvim_set_keymap('n', '<Bslash>rft', ':RunFile tab<CR>', { noremap = true, silent = false })
+      -- vim.api.nvim_set_keymap('n', '<Bslash>rp', ':RunProject<CR>', { noremap = true, silent = false })
+      -- vim.api.nvim_set_keymap('n', '<Bslash>rc', ':RunClose<CR>', { noremap = true, silent = false })
+      -- vim.api.nvim_set_keymap('n', '<Bslash>crf', ':CRFiletype<CR>', { noremap = true, silent = false })
+      -- vim.api.nvim_set_keymap('n', '<Bslash>crp', ':CRProjects<CR>', { noremap = true, silent = false })
+    end
+  },
+
+  {
+    "danymat/neogen",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    config = function()
+      require('neogen').setup({})
+
+      vim.api.nvim_set_keymap('n', '<Bslash>dg', ":Neogen<cr>", { noremap = true, silent = false })
     end,
   }
 }
