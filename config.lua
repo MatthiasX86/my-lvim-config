@@ -85,6 +85,8 @@ lvim.builtin.treesitter.ensure_installed = {
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
 
+lvim.builtin.which_key.setup.plugins.presets.z = true
+
 vim.api.nvim_set_keymap("i", "jk", "<ESC>", { noremap = true, silent = true })
 
 -- ---@usage disable automatic installation of servers
@@ -579,15 +581,154 @@ lvim.plugins = {
   },
 
   {
-    "Xuyuanp/scrollbar.nvim",
+    "petertriho/nvim-scrollbar",
+    requires = "kevinhwang91/nvim-hlslens",
     config = function()
-      require("scrollbar").setup()
+      require("scrollbar").setup({
+        show = true,
+        set_highlights = true,
+        handle = {
+          text = " ",
+          color = nil,
+          cterm = nil,
+          highlight = "CursorColumn",
+          hide_if_all_visible = true, -- Hides handle if all lines are visible
+        },
+        marks = {
+          Search = {
+            text = { "-", "=" },
+            priority = 0,
+            color = nil,
+            cterm = nil,
+            highlight = "Search",
+          },
+          Error = {
+            text = { "-", "=" },
+            priority = 1,
+            color = nil,
+            cterm = nil,
+            highlight = "DiagnosticVirtualTextError",
+          },
+          Warn = {
+            text = { "-", "=" },
+            priority = 2,
+            color = nil,
+            cterm = nil,
+            highlight = "DiagnosticVirtualTextWarn",
+          },
+          Info = {
+            text = { "-", "=" },
+            priority = 3,
+            color = nil,
+            cterm = nil,
+            highlight = "DiagnosticVirtualTextInfo",
+          },
+          Hint = {
+            text = { "-", "=" },
+            priority = 4,
+            color = nil,
+            cterm = nil,
+            highlight = "DiagnosticVirtualTextHint",
+          },
+          Misc = {
+            text = { "-", "=" },
+            priority = 5,
+            color = nil,
+            cterm = nil,
+            highlight = "Normal",
+          },
+        },
+        excluded_buftypes = {
+          "terminal",
+        },
+        excluded_filetypes = {
+          "prompt",
+          "TelescopePrompt",
+        },
+        autocmd = {
+          render = {
+            "BufWinEnter",
+            "TabEnter",
+            "TermEnter",
+            "WinEnter",
+            "CmdwinLeave",
+            "TextChanged",
+            "VimResized",
+            "WinScrolled",
+          },
+        },
+        handlers = {
+          diagnostic = true,
+          search = false, -- Requires hlslens to be loaded, will run require("scrollbar.handlers.search").setup() for you
+        },
+      })
+      require("scrollbar.handlers.search").setup()
     end
   },
 
-  {
-    "alexaandru/nvim-lspupdate"
-  },
+  -- enable when neovim 0.10 is out
+  -- {
+  --   "lewis6991/satellite.nvim",
+  --   config = function()
+  --     require('satellite').setup {
+  --       current_only = false,
+  --       winblend = 50,
+  --       zindex = 40,
+  --       excluded_filetypes = {},
+  --       width = 2,
+  --       handlers = {
+  --         cursor = {
+  --           enable = true,
+  --           -- Supports any number of symbols
+  --           symbols = { '⎺', '⎻', '⎼', '⎽' }
+  --           -- symbols = { '⎻', '⎼' }
+  --           -- Highlights:
+  --           -- - SatelliteCursor (default links to NonText
+  --         },
+  --         search = {
+  --           enable = true,
+  --           -- Highlights:
+  --           -- - SatelliteSearch (default links to Search)
+  --           -- - SatelliteSearchCurrent (default links to SearchCurrent)
+  --         },
+  --         diagnostic = {
+  --           enable = true,
+  --           signs = { '-', '=', '≡' },
+  --           min_severity = vim.diagnostic.severity.HINT,
+  --           -- Highlights:
+  --           -- - SatelliteDiagnosticError (default links to DiagnosticError)
+  --           -- - SatelliteDiagnosticWarn (default links to DiagnosticWarn)
+  --           -- - SatelliteDiagnosticInfo (default links to DiagnosticInfo)
+  --           -- - SatelliteDiagnosticHint (default links to DiagnosticHint)
+  --         },
+  --         gitsigns = {
+  --           enable = true,
+  --           signs = { -- can only be a single character (multibyte is okay)
+  --             add = "│",
+  --             change = "│",
+  --             delete = "-",
+  --           },
+  --           -- Highlights:
+  --           -- SatelliteGitSignsAdd (default links to GitSignsAdd)
+  --           -- SatelliteGitSignsChange (default links to GitSignsChange)
+  --           -- SatelliteGitSignsDelete (default links to GitSignsDelete)
+  --         },
+  --         marks = {
+  --           enable = true,
+  --           show_builtins = false, -- shows the builtin marks like [ ] < >
+  --           key = 'm'
+  --           -- Highlights:
+  --           -- SatelliteMark (default links to Normal)
+  --         },
+  --         quickfix = {
+  --           signs = { '-', '=', '≡' },
+  --           -- Highlights:
+  --           -- SatelliteQuickfix (default links to WarningMsg)
+  --         }
+  --       },
+  --     }
+  --   end
+  -- },
 
   {
     "fladson/vim-kitty"
@@ -891,17 +1032,6 @@ lvim.plugins = {
   },
 
   {
-    'lewis6991/spellsitter.nvim',
-    config = function()
-      require('spellsitter').setup {
-        -- Whether enabled, can be a list of filetypes, e.g. {'python', 'lua'}
-        enable = true,
-      }
-      vim.api.nvim_set_keymap("n", "<Bslash>sp", ":set spell<Enter>", { noremap = true, silent = true })
-    end
-  },
-
-  {
     "davidgranstrom/nvim-markdown-preview",
     config = function()
       vim.api.nvim_set_keymap("n", "<Bslash>mp", ":MarkdownPreview<Enter>", { noremap = true, silent = true })
@@ -962,102 +1092,12 @@ lvim.plugins = {
     end
   },
 
-  {
-    "petertriho/nvim-scrollbar",
-    requires = "kevinhwang91/nvim-hlslens",
-    config = function()
-      require("scrollbar").setup({
-        show = true,
-        set_highlights = true,
-        handle = {
-          text = " ",
-          color = nil,
-          cterm = nil,
-          highlight = "CursorColumn",
-          hide_if_all_visible = true, -- Hides handle if all lines are visible
-        },
-        marks = {
-          Search = {
-            text = { "-", "=" },
-            priority = 0,
-            color = nil,
-            cterm = nil,
-            highlight = "Search",
-          },
-          Error = {
-            text = { "-", "=" },
-            priority = 1,
-            color = nil,
-            cterm = nil,
-            highlight = "DiagnosticVirtualTextError",
-          },
-          Warn = {
-            text = { "-", "=" },
-            priority = 2,
-            color = nil,
-            cterm = nil,
-            highlight = "DiagnosticVirtualTextWarn",
-          },
-          Info = {
-            text = { "-", "=" },
-            priority = 3,
-            color = nil,
-            cterm = nil,
-            highlight = "DiagnosticVirtualTextInfo",
-          },
-          Hint = {
-            text = { "-", "=" },
-            priority = 4,
-            color = nil,
-            cterm = nil,
-            highlight = "DiagnosticVirtualTextHint",
-          },
-          Misc = {
-            text = { "-", "=" },
-            priority = 5,
-            color = nil,
-            cterm = nil,
-            highlight = "Normal",
-          },
-        },
-        excluded_buftypes = {
-          "terminal",
-        },
-        excluded_filetypes = {
-          "prompt",
-          "TelescopePrompt",
-        },
-        autocmd = {
-          render = {
-            "BufWinEnter",
-            "TabEnter",
-            "TermEnter",
-            "WinEnter",
-            "CmdwinLeave",
-            "TextChanged",
-            "VimResized",
-            "WinScrolled",
-          },
-        },
-        handlers = {
-          diagnostic = true,
-          search = false, -- Requires hlslens to be loaded, will run require("scrollbar.handlers.search").setup() for you
-        },
-      })
-      require("scrollbar.handlers.search").setup()
-    end
-  },
 
   {
     'kevinhwang91/nvim-hlslens',
     config = function()
       require("hlslens").setup()
     end,
-  },
-
-  {
-    'weilbith/nvim-code-action-menu',
-    cmd = 'CodeActionMenu',
   },
 
   {
@@ -1485,7 +1525,196 @@ lvim.plugins = {
       require("neoai").setup({
         -- Options go here
       })
+
+
+      vim.api.nvim_set_keymap('n', '<Bslash>ain', ":NeoAi<Enter>", { noremap = true, silent = false })
     end,
+  },
+  {
+    "jackMort/ChatGPT.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("chatgpt").setup {
+        api_key_cmd = nil,
+        yank_register = "+",
+        edit_with_instructions = {
+          diff = false,
+          keymaps = {
+            close = "<C-c>",
+            accept = "<C-y>",
+            toggle_diff = "<C-d>",
+            toggle_settings = "<C-o>",
+            toggle_help = "<C-h>",
+            cycle_windows = "<Tab>",
+            use_output_as_input = "<C-i>",
+          },
+        },
+        chat = {
+          welcome_message = WELCOME_MESSAGE,
+          loading_text = "Loading, please wait ...",
+          question_sign = "", -- 🙂
+          answer_sign = "ﮧ", -- 🤖
+          border_left_sign = "",
+          border_right_sign = "",
+          max_line_length = 120,
+          sessions_window = {
+            active_sign = "  ",
+            inactive_sign = "  ",
+            current_line_sign = "",
+            border = {
+              style = "rounded",
+              text = {
+                top = " Sessions ",
+              },
+            },
+            win_options = {
+              winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+            },
+          },
+          keymaps = {
+            close = "<C-c>",
+            yank_last = "<C-y>",
+            yank_last_code = "<C-k>",
+            scroll_up = "<C-u>",
+            scroll_down = "<C-d>",
+            new_session = "<C-n>",
+            cycle_windows = "<Tab>",
+            cycle_modes = "<C-f>",
+            next_message = "<C-j>",
+            prev_message = "<C-k>",
+            select_session = "<Space>",
+            rename_session = "r",
+            delete_session = "d",
+            draft_message = "<C-r>",
+            edit_message = "e",
+            delete_message = "d",
+            toggle_settings = "<C-o>",
+            toggle_sessions = "<C-p>",
+            toggle_help = "<C-h>",
+            toggle_message_role = "<C-r>",
+            toggle_system_role_open = "<C-s>",
+            stop_generating = "<C-x>",
+          },
+        },
+        popup_layout = {
+          default = "center",
+          center = {
+            width = "80%",
+            height = "80%",
+          },
+          right = {
+            width = "30%",
+            width_settings_open = "50%",
+          },
+        },
+        popup_window = {
+          border = {
+            highlight = "FloatBorder",
+            style = "rounded",
+            text = {
+              top = " ChatGPT ",
+            },
+          },
+          win_options = {
+            wrap = true,
+            linebreak = true,
+            foldcolumn = "1",
+            winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+          },
+          buf_options = {
+            filetype = "markdown",
+          },
+        },
+        system_window = {
+          border = {
+            highlight = "FloatBorder",
+            style = "rounded",
+            text = {
+              top = " SYSTEM ",
+            },
+          },
+          win_options = {
+            wrap = true,
+            linebreak = true,
+            foldcolumn = "2",
+            winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+          },
+        },
+        popup_input = {
+          prompt = "  ",
+          border = {
+            highlight = "FloatBorder",
+            style = "rounded",
+            text = {
+              top_align = "center",
+              top = " Prompt ",
+            },
+          },
+          win_options = {
+            winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+          },
+          submit = "<C-Enter>",
+          submit_n = "<Enter>",
+          max_visible_lines = 20,
+        },
+        settings_window = {
+          setting_sign = "  ",
+          border = {
+            style = "rounded",
+            text = {
+              top = " Settings ",
+            },
+          },
+          win_options = {
+            winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+          },
+        },
+        help_window = {
+          setting_sign = "  ",
+          border = {
+            style = "rounded",
+            text = {
+              top = " Help ",
+            },
+          },
+          win_options = {
+            winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+          },
+        },
+        openai_params = {
+          model = "gpt-3.5-turbo",
+          frequency_penalty = 0,
+          presence_penalty = 0,
+          max_tokens = 300,
+          temperature = 0,
+          top_p = 1,
+          n = 1,
+        },
+        openai_edit_params = {
+          model = "gpt-3.5-turbo",
+          frequency_penalty = 0,
+          presence_penalty = 0,
+          temperature = 0,
+          top_p = 1,
+          n = 1,
+        },
+        use_openai_functions_for_edits = false,
+        actions_paths = {},
+        show_quickfixes_cmd = "Trouble quickfix",
+        predefined_chat_gpt_prompts = "https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv",
+        highlights = {
+          help_key = "@symbol",
+          help_description = "@comment",
+        },
+      }
+
+      vim.api.nvim_set_keymap('n', '<Bslash>aic', ":ChatGPT<Enter>", { noremap = true, silent = false })
+    end,
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim"
+    }
   },
 
   {
@@ -1659,7 +1888,98 @@ lvim.plugins = {
 
       vim.api.nvim_set_keymap('n', '<Bslash>dg', ":Neogen<cr>", { noremap = true, silent = false })
     end,
-  }
+  },
+
+  {
+    'kevinhwang91/nvim-ufo',
+    requires = 'kevinhwang91/promise-async',
+    config = function()
+      vim.o.foldcolumn = '1' -- '0' is not bad
+      vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+
+      local handler = function(virtText, lnum, endLnum, width, truncate)
+        local newVirtText = {}
+        local suffix = (' 󰁂 %d '):format(endLnum - lnum)
+        local sufWidth = vim.fn.strdisplaywidth(suffix)
+        local targetWidth = width - sufWidth
+        local curWidth = 0
+        for _, chunk in ipairs(virtText) do
+          local chunkText = chunk[1]
+          local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+          if targetWidth > curWidth + chunkWidth then
+            table.insert(newVirtText, chunk)
+          else
+            chunkText = truncate(chunkText, targetWidth - curWidth)
+            local hlGroup = chunk[2]
+            table.insert(newVirtText, { chunkText, hlGroup })
+            chunkWidth = vim.fn.strdisplaywidth(chunkText)
+            -- str width returned from truncate() may less than 2nd argument, need padding
+            if curWidth + chunkWidth < targetWidth then
+              suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+            end
+            break
+          end
+          curWidth = curWidth + chunkWidth
+        end
+        table.insert(newVirtText, { suffix, 'MoreMsg' })
+        return newVirtText
+      end
+
+      -- global handler
+      -- `handler` is the 2nd parameter of `setFoldVirtTextHandler`,
+      -- check out `./lua/ufo.lua` and search `setFoldVirtTextHandler` for detail.
+
+      require('ufo').setup({
+        fold_virt_text_handler = handler,
+        open_fold_hl_timeout = 150,
+        close_fold_kinds = { 'imports', 'comment' },
+        preview = {
+          win_config = {
+            border = { '', '─', '', '', '', '─', '', '' },
+            winhighlight = 'Normal:Folded',
+          },
+          mappings = {
+            scrollU = '<C-u>',
+            scrollD = '<C-d>',
+            jumpTop = '[',
+            jumpBot = ']'
+          }
+        },
+        provider_selector = function(bufnr, filetype, buftype)
+          return { 'treesitter', 'indent' }
+        end
+      })
+
+      vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+      vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+      vim.keymap.set('n', 'zr', require('ufo').openFoldsExceptKinds)
+      vim.keymap.set('n', 'zm', require('ufo').closeFoldsWith) -- closeAllFolds == closeFoldsWith(0)
+      vim.keymap.set('n', 'zk', function()
+        local winid = require('ufo').peekFoldedLinesUnderCursor()
+        if not winid then
+          -- choose one of coc.nvim and nvim lsp
+          vim.fn.CocActionAsync('definitionHover') -- coc.nvim
+          vim.lsp.buf.hover()
+        end
+      end)
+    end
+  },
+
+  {
+    "roobert/action-hints.nvim",
+    config = function()
+      require("action-hints").setup({
+        template = {
+          definition = { text = " ⊛", color = "#add8e6" },
+          references = { text = " ↱%s", color = "#ff6666" },
+        },
+        use_virtual_text = true,
+      })
+    end,
+  },
+
 }
 
 -- this isn't working...
