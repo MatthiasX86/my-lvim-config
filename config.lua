@@ -120,7 +120,7 @@ formatters.setup {
     command = "prettier",
     ---@usage arguments to pass to the formatter
     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
-    -- extra_args = { "--print-with", "100" },
+    extra_args = { "--no-semi" },
     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
     filetypes = { "typescript", "typescriptreact" },
   },
@@ -167,7 +167,7 @@ lvim.plugins = {
 
   {
     "catppuccin/nvim",
-    as = "catppuccin",
+    name = "catppuccin",
     config = function()
       vim.g.catppuccin_flavour = "mocha"
 
@@ -423,9 +423,9 @@ lvim.plugins = {
     end
   },
 
-  {
-    "p00f/nvim-ts-rainbow",
-  },
+  -- {
+  --   "p00f/nvim-ts-rainbow",
+  -- },
 
   -- {
   --   "JoosepAlviste/nvim-ts-context-commentstring",
@@ -434,7 +434,7 @@ lvim.plugins = {
 
   {
     "nvim-telescope/telescope-fzy-native.nvim",
-    run = "make",
+    build = "make",
   },
 
   -- {
@@ -495,25 +495,25 @@ lvim.plugins = {
     end,
   },
 
-  {
-    "iamcco/markdown-preview.nvim",
-    run = "cd app && npm install",
-    ft = "markdown",
-    config = function()
-      vim.g.mkdp_auto_start = 1
-    end,
-  },
+  -- {
+  --   "iamcco/markdown-preview.nvim",
+  --   build = "cd app && npm install",
+  --   ft = "markdown",
+  --   config = function()
+  --     vim.g.mkdp_auto_start = 1
+  --   end,
+  -- },
 
-  {
-    "turbio/bracey.vim",
-    cmd = { "Bracey", "BracyStop", "BraceyReload", "BraceyEval" },
-    run = "npm install --prefix server",
-  },
+  -- {
+  --   "turbio/bracey.vim",
+  --   cmd = { "Bracey", "BracyStop", "BraceyReload", "BraceyEval" },
+  --   build = "npm install --prefix server",
+  -- },
 
   {
     "npxbr/glow.nvim",
     ft = { "markdown" }
-    -- run = "yay -S glow"
+    -- build = "yay -S glow"
   },
 
   {
@@ -522,7 +522,7 @@ lvim.plugins = {
     config = function()
       require("todo-comments").setup {}
     end,
-    requires = "nvim-lua/plenary.nvim",
+    dependencies = "nvim-lua/plenary.nvim",
   },
 
   {
@@ -582,7 +582,7 @@ lvim.plugins = {
 
   {
     "petertriho/nvim-scrollbar",
-    requires = "kevinhwang91/nvim-hlslens",
+    dependencies = "kevinhwang91/nvim-hlslens",
     config = function()
       require("scrollbar").setup({
         show = true,
@@ -736,7 +736,7 @@ lvim.plugins = {
 
   {
     "s1n7ax/nvim-comment-frame",
-    requires = {
+    dependencies = {
       { 'nvim-treesitter' }
     },
     config = function()
@@ -859,17 +859,17 @@ lvim.plugins = {
   --       },
   --     }
   --   end,
-  --   requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+  --   dependencies = { 'kyazdani42/nvim-web-devicons', opt = true }
   -- },
 
   {
     "vuki656/package-info.nvim",
-    requires = "MunifTanjim/nui.nvim",
+    dependencies = "MunifTanjim/nui.nvim",
   },
 
   {
     'sudormrfbin/cheatsheet.nvim',
-    requires = {
+    dependencies = {
       { 'nvim-telescope/telescope.nvim' },
       { 'nvim-lua/popup.nvim' },
       { 'nvim-lua/plenary.nvim' },
@@ -945,8 +945,13 @@ lvim.plugins = {
 
   {
     "michaelb/sniprun",
-    run = 'bash ./install.sh',
+    build = 'bash ./install.sh',
     config = function()
+      require('sniprun').setup({
+        selected_interpreters = { "JS_TS_bun" },
+        repl_enable = { "JS_TS_bun" }
+      })
+
       vim.api.nvim_set_keymap("v", "<Bslash>sr", ":'<,'>SnipRun<Enter>", { noremap = true, silent = true })
       vim.api.nvim_set_keymap("n", "<Bslash>ssc", ":SnipClose<Enter>", { noremap = true, silent = true })
     end
@@ -996,28 +1001,28 @@ lvim.plugins = {
     end
   },
 
-  {
-    "edluffy/specs.nvim",
-    config = function()
-      require('specs').setup {
-        show_jumps       = true,
-        min_jump         = 30,
-        popup            = {
-          delay_ms = 0, -- delay before popup displays
-          inc_ms = 10,  -- time increments used for fade/resize effects
-          blend = 10,   -- starting blend, between 0-100 (fully transparent), see :h winblend
-          width = 10,
-          winhl = "pulse_fader",
-          fader = require('specs').linear_fader,
-          resizer = require('specs').shrink_resizer
-        },
-        ignore_filetypes = {},
-        ignore_buftypes  = {
-          nofile = true,
-        },
-      }
-    end
-  },
+  -- {
+  --   "edluffy/specs.nvim",
+  --   config = function()
+  --     require('specs').setup {
+  --       show_jumps       = true,
+  --       min_jump         = 30,
+  --       popup            = {
+  --         delay_ms = 0, -- delay before popup displays
+  --         inc_ms = 10,  -- time increments used for fade/resize effects
+  --         blend = 10,   -- starting blend, between 0-100 (fully transparent), see :h winblend
+  --         width = 10,
+  --         winhl = "pulse_fader",
+  --         fader = require('specs').linear_fader,
+  --         resizer = require('specs').shrink_resizer
+  --       },
+  --       ignore_filetypes = {},
+  --       ignore_buftypes  = {
+  --         nofile = true,
+  --       },
+  --     }
+  --   end
+  -- },
 
   {
     'tanvirtin/vgit.nvim',
@@ -1028,7 +1033,7 @@ lvim.plugins = {
         { noremap = true, silent = true })
       vim.api.nvim_set_keymap("n", "<Bslash>gbp", ":VGit buffer_blame_preview<Enter>", { noremap = true, silent = true })
     end,
-    requires = { 'nvim-lua/plenary.nvim' }
+    dependencies = { 'nvim-lua/plenary.nvim' }
   },
 
   {
@@ -1107,39 +1112,39 @@ lvim.plugins = {
     end,
   },
 
-  {
-    "NTBBloodbath/rest.nvim",
-    requires = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("rest-nvim").setup({
-        -- Open request results in a horizontal split
-        result_split_horizontal = false,
-        -- Keep the http file buffer above|left when split horizontal|vertical
-        result_split_in_place = false,
-        -- Skip SSL verification, useful for unknown certificates
-        skip_ssl_verification = false,
-        -- Highlight request on run
-        highlight = {
-          enabled = true,
-          timeout = 150,
-        },
-        result = {
-          -- toggle showing URL, HTTP info, headers at top the of result window
-          show_url = true,
-          show_http_info = true,
-          show_headers = true,
-        },
-        -- Jump to request line on run
-        jump_to_request = false,
-        env_file = '.env',
-        custom_dynamic_variables = {},
-        yank_dry_run = true,
-      })
-      vim.api.nvim_set_keymap("n", "<Bslash>rr", "<Plug>RestNvim", { noremap = true, silent = true })
-      vim.api.nvim_set_keymap("n", "<Bslash>rp", "<Plug>RestNvimPreview", { noremap = true, silent = true })
-      vim.api.nvim_set_keymap("n", "<Bslash>rl", "<Plug>RestNvimLast", { noremap = true, silent = true })
-    end
-  },
+  -- {
+  --   "NTBBloodbath/rest.nvim",
+  --   dependencies = { "nvim-lua/plenary.nvim" },
+  --   config = function()
+  --     require("rest-nvim").setup({
+  --       -- Open request results in a horizontal split
+  --       result_split_horizontal = false,
+  --       -- Keep the http file buffer above|left when split horizontal|vertical
+  --       result_split_in_place = false,
+  --       -- Skip SSL verification, useful for unknown certificates
+  --       skip_ssl_verification = false,
+  --       -- Highlight request on run
+  --       highlight = {
+  --         enabled = true,
+  --         timeout = 150,
+  --       },
+  --       result = {
+  --         -- toggle showing URL, HTTP info, headers at top the of result window
+  --         show_url = true,
+  --         show_http_info = true,
+  --         show_headers = true,
+  --       },
+  --       -- Jump to request line on run
+  --       jump_to_request = false,
+  --       env_file = '.env',
+  --       custom_dynamic_variables = {},
+  --       yank_dry_run = true,
+  --     })
+  --     vim.api.nvim_set_keymap("n", "<Bslash>rr", "<Plug>RestNvim", { noremap = true, silent = true })
+  --     vim.api.nvim_set_keymap("n", "<Bslash>rp", "<Plug>RestNvimPreview", { noremap = true, silent = true })
+  --     vim.api.nvim_set_keymap("n", "<Bslash>rl", "<Plug>RestNvimLast", { noremap = true, silent = true })
+  --   end
+  -- },
 
   {
     "nanotee/sqls.nvim",
@@ -1183,8 +1188,8 @@ lvim.plugins = {
         show_prediction_strength = false,
       })
     end,
-    run = './install.sh',
-    requires = 'hrsh7th/nvim-cmp'
+    build = './install.sh',
+    dependencies = 'hrsh7th/nvim-cmp'
   },
 
   -- {
@@ -1193,7 +1198,7 @@ lvim.plugins = {
 
   {
     'junegunn/gv.vim',
-    requires = 'tpope/vim-fugitive',
+    dependencies = 'tpope/vim-fugitive',
     config = function()
       vim.api.nvim_set_keymap("n", "<Bslash>gl", ":GV<Enter>", { noremap = true, silent = true })
     end
@@ -1218,7 +1223,7 @@ lvim.plugins = {
 
   {
     "glacambre/firenvim",
-    run = function()
+    build = function()
       vim.fn['firenvim#install'](0)
     end
   },
@@ -1260,7 +1265,7 @@ lvim.plugins = {
     config = function()
       require 'regexplainer'.setup()
     end,
-    requires = {
+    dependencies = {
       'nvim-treesitter/nvim-treesitter',
       'MunifTanjim/nui.nvim',
     }
@@ -1284,7 +1289,7 @@ lvim.plugins = {
         }
       })
     end,
-    requires = {
+    dependencies = {
       -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
       "MunifTanjim/nui.nvim",
       -- OPTIONAL:
@@ -1295,14 +1300,15 @@ lvim.plugins = {
     }
   },
 
-  {
-    "stevearc/overseer.nvim",
-    config = function()
-      require('overseer').setup()
-      vim.api.nvim_set_keymap("n", "<Bslash>oor", ":OverseerRunCmd ", { noremap = true, silent = true })
-      vim.api.nvim_set_keymap("n", "<Bslash>oot", ":OverseerToggle<Enter>", { noremap = true, silent = true })
-    end
-  },
+  -- 6/2/24: disable
+  -- {
+  --   "stevearc/overseer.nvim",
+  --   config = function()
+  --     require('overseer').setup()
+  --     vim.api.nvim_set_keymap("n", "<Bslash>oor", ":OverseerRunCmd ", { noremap = true, silent = true })
+  --     vim.api.nvim_set_keymap("n", "<Bslash>oot", ":OverseerToggle<Enter>", { noremap = true, silent = true })
+  --   end
+  -- },
 
   {
     'simrat39/rust-tools.nvim',
@@ -1464,7 +1470,7 @@ lvim.plugins = {
 
       require('rust-tools').setup(opts)
     end,
-    requires = {
+    dependencies = {
       "neovim/nvim-lspconfig",
       'nvim-lua/plenary.nvim',
       'mfussenegger/nvim-dap'
@@ -1892,7 +1898,7 @@ lvim.plugins = {
 
   {
     'kevinhwang91/nvim-ufo',
-    requires = 'kevinhwang91/promise-async',
+    dependencies = 'kevinhwang91/promise-async',
     config = function()
       vim.o.foldcolumn = '1' -- '0' is not bad
       vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
@@ -1980,6 +1986,25 @@ lvim.plugins = {
     end,
   },
 
+  {
+    "luckasRanarison/nvim-devdocs",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("nvim-devdocs").setup()
+
+
+      vim.api.nvim_set_keymap('n', '<Bslash>ddi', ":DevdocsInstall", { noremap = true, silent = false })
+      vim.api.nvim_set_keymap('n', '<Bslash>ddo', ":DevdocsOpen<Enter>", { noremap = true, silent = false })
+      vim.api.nvim_set_keymap('n', '<Bslash>ddf', ":DevdocsOpenFloat<Enter>", { noremap = true, silent = false })
+      vim.api.nvim_set_keymap('n', '<Bslash>ddt', ":DevdocsToggle<Enter>", { noremap = true, silent = false })
+      vim.api.nvim_set_keymap('n', '<Bslash>ddu', ":DevdocsUpdateAll<Enter>", { noremap = true, silent = false })
+    end
+  },
+
 }
 
 -- this isn't working...
@@ -1988,6 +2013,7 @@ lvim.plugins = {
 require 'lspconfig'.tailwindcss.setup {}
 require 'lspconfig'.cssmodules_ls.setup {}
 require 'lspconfig'.solang.setup {}
+require 'lspconfig'.glsl_analyzer.setup {}
 
 -- Debug Adapter Protocol: DAP
 
